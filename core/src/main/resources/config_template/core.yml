@@ -1,0 +1,9 @@
+rapids:
+  core:
+    database:
+      driverURL: xxx
+      userName: xxx
+      password: xxx
+      initialSize: 3
+      minIdle: 3
+      maxActive: 30

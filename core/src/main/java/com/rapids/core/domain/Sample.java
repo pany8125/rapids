@@ -8,17 +8,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- * @author David on 17/2/22.
+ * @author David on 17/2/24.
  */
-@Entity
 @Data
-public class KnowledgePack {
+@Entity
+public class Sample {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private Integer id ;
     private String name;
-
-
+    private Integer age;
+    private String description;
 }
