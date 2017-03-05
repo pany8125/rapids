@@ -12,7 +12,7 @@ import javax.persistence.Id;
  */
 @Entity
 @Data
-public class KnowledgePack {
+public class Pack {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,5 +20,11 @@ public class KnowledgePack {
 
     private String name;
 
+    private Type type;
+
+    @SuppressWarnings({"unused", "WeakerAccess"})
+    public enum Type {
+        ENGLISH, MATH, LITERATURE
+    }
 
 }

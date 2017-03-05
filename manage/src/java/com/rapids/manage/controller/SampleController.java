@@ -33,7 +33,7 @@ public class SampleController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public PagedResources<Sample> r(@PageableDefault Pageable page, PagedResourcesAssembler assembler) {
+    public PagedResources<Sample> r(@PageableDefault(page = 1) Pageable page, PagedResourcesAssembler assembler) {
         return assembler.toResource(sampleRepo.findAll(page));
     }
 
