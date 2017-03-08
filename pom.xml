@@ -92,7 +92,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-test</artifactId>
-                <version>1.4.0.BUILD-SNAPSHOT</version>
+                <version>1.4.5.RELEASE</version>
                 <scope>test</scope>
             </dependency>
             <!-- test end -->
