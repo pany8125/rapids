@@ -25,4 +25,8 @@ public class Knowledge {
     private Date createTime;
     private Date lastUpdateTime;
     private String editor;
+
+    public enum Impress {
+        REMEMBER, HESITATE, FORGET;
+    }
 }

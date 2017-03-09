@@ -3,6 +3,7 @@ package com.rapids.core.test;
 import com.rapids.core.CoreConfig;
 import com.rapids.core.domain.*;
 import com.rapids.core.repo.*;
+import com.rapids.core.service.StudyService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -11,14 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTestContextBootstrapper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.BootstrapWith;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.util.DigestUtils;
 
 import java.util.ArrayList;
@@ -52,9 +49,10 @@ public class JavaConfigTest {
 
     private @Autowired PackRepo packRepo;
     private @Autowired StudentRepo studentRepo;
-    private @Autowired StuKnowledgeQueueRepo stuKnowledgeQueueRepo;
+    private @Autowired StuKnowledgeRelaRepo stuKnowledgeRelaRepo;
     private @Autowired StuPackRelaRepo stuPackRelaRepo;
     private @Autowired KnowledgeRepo knowledgeRepo;
+    private @Autowired StudyService studyService;
 
     @Test
     public void initTestData() {
@@ -64,6 +62,11 @@ public class JavaConfigTest {
         relaKnowsAndStudent(student, knows);
         relaStudentAndPack(student, pack, knows);
 
+    }
+
+    @Test
+    public void testQuery() {
+        studyService.nextKnowledge(1);
     }
 
     private void relaStudentAndPack(Student student, Pack pack, List<Knowledge> knowledges) {
@@ -81,13 +84,13 @@ public class JavaConfigTest {
 
     private void relaKnowsAndStudent(Student student, List<Knowledge> knows) {
         knows.forEach(knowledge -> {
-            StuKnowledgeQueue stuKnowledgeQueue = new StuKnowledgeQueue();
-            stuKnowledgeQueue.setId(DigestUtils.md5DigestAsHex(UUID.randomUUID().toString().getBytes()));
-            stuKnowledgeQueue.setKnowledgeId(knowledge.getId());
-            stuKnowledgeQueue.setStudentId(student.getId());
-            stuKnowledgeQueue.setStatus(StuKnowledgeQueue.Status.CREATED);
-            stuKnowledgeQueueRepo.save(stuKnowledgeQueue);
-            LOGGER.debug("knows student rela created! {}", stuKnowledgeQueue);
+            StuKnowledgeRela stuKnowledgeRela = new StuKnowledgeRela();
+            stuKnowledgeRela.setId(DigestUtils.md5DigestAsHex(UUID.randomUUID().toString().getBytes()));
+            stuKnowledgeRela.setKnowledgeId(knowledge.getId());
+            stuKnowledgeRela.setStudentId(student.getId());
+            stuKnowledgeRela.setStatus(StuKnowledgeRela.Status.CREATED);
+            stuKnowledgeRelaRepo.save(stuKnowledgeRela);
+            LOGGER.debug("knows student rela created! {}", stuKnowledgeRela);
         });
 
 

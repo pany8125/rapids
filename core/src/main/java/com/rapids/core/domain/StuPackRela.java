@@ -10,7 +10,10 @@ import java.util.Date;
  */
 @Data
 @Entity
-//@Table(uniqueConstraints = {@UniqueConstraint(columnNames = { "studentId", "packId" })})
+@Table(
+        uniqueConstraints = {@UniqueConstraint(columnNames = { "studentId", "packId" })},
+        indexes = @Index(columnList = "studentId")
+)
 public class StuPackRela {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
