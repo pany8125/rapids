@@ -3,13 +3,16 @@ package com.rapids.web.controller;
 import com.rapids.core.domain.Student;
 import com.rapids.web.Constants;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.HttpClientErrorException;
 import javax.servlet.http.HttpSession;
 
 /**
  * @author David on 16/11/9.
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class LoginedController {
 
     private ThreadLocal<Student> currentStudent = new ThreadLocal<>();
@@ -23,7 +26,7 @@ public abstract class LoginedController {
         currentStudent.set(student);
     }
 
-    public Student currentStudent() {
+    Student currentStudent() {
         return currentStudent.get();
     }
 }

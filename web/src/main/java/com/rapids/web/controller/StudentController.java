@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 /**
  * @author David on 17/3/8.
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 @RestController
 @RequestMapping("/")
 public class StudentController {
@@ -36,10 +37,19 @@ public class StudentController {
         session.setAttribute(Constants.STUDENT_SESSION_KEY, student);
     }
 
+    @GetMapping("checkSession")
+    @ResponseStatus(HttpStatus.OK)
+    public void checkSession(HttpSession session) {
+        Student student = (Student)session.getAttribute(Constants.STUDENT_SESSION_KEY);
+        if(null == student) {
+            throw new HttpClientErrorException(HttpStatus.FORBIDDEN);
+        }
+    }
 
     @Data
     private static class LoginReq {
         private String userName;
         private String password;
     }
+
 }

@@ -1,6 +1,6 @@
 server:
-  context-path: /rapids
-  port: 8082
+  context-path: /rapids-rest
+  port: 8850
 rapids:
   core:
     database:
