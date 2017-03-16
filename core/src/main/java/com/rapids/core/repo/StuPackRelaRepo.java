@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author David on 17/2/28.
  */
@@ -14,4 +16,6 @@ public interface StuPackRelaRepo extends PagingAndSortingRepository<StuPackRela,
     StuPackRela findLastStudyPack(long studentId);
 
     StuPackRela findByStudentIdAndPackId(long studentId, long packId);
+
+    List<StuPackRela> findByStudentId(long studentId);
 }

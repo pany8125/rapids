@@ -1141,6 +1141,7 @@ footer.footer .copyright p.small {
 body.modern {
   font-family: "Microsoft YaHei", "Cardo", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 400;
+  background-color: #C2B49A;
 }
 body.modern h1,
 body.modern h2,
@@ -1252,8 +1253,17 @@ body.vintage .testimonials .owl-controls .owl-next {
   display: block;
 }
 
-#fakeloader {
+.fakeloader {
   filter: Alpha(opacity=50); /* IE */
   -moz-opacity:0.5;    /* FF 主要是为了兼容老版本的FF */
   opacity:0.5;    /* FF */
+}
+.pop {
+  position: fixed;
+  top: 80px;
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+  float: none;
+
 }

@@ -20,6 +20,7 @@ public class StuPackRela {
     private Long id;
     private Long studentId;
     private Long packId;
+    private String packName;
     private Integer knowledgeNum;
     private Integer learnedNum;
     private Date lastLearnTime;

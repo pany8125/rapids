@@ -2,9 +2,11 @@ package com.rapids.web.controller;
 
 import com.rapids.core.domain.Knowledge;
 import com.rapids.core.domain.StuKnowledgeRela;
+import com.rapids.core.domain.StuPackRela;
 import com.rapids.core.domain.Student;
 import com.rapids.core.repo.KnowledgeRepo;
 import com.rapids.core.repo.StuKnowledgeRelaRepo;
+import com.rapids.core.repo.StuPackRelaRepo;
 import com.rapids.core.service.StudyService;
 import lombok.Data;
 import lombok.Setter;
@@ -19,6 +21,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -35,8 +38,15 @@ public class StudyController extends LoginedController{
     private @Autowired StudyService studyService;
     private @Autowired StuKnowledgeRelaRepo stuKnowledgeRelaRepo;
     private @Autowired KnowledgeRepo knowledgeRepo;
+    private @Autowired StuPackRelaRepo stuPackRelaRepo;
     private @Setter Integer seqCount;
     private @Setter Integer intervalLimit;
+
+    @GetMapping("/packages")
+    @ResponseStatus(HttpStatus.OK)
+    public List<StuPackRela> packages() {
+        return stuPackRelaRepo.findByStudentId(currentStudent().getId());
+    }
 
     @GetMapping("/activity")
     @ResponseStatus(HttpStatus.CONTINUE)

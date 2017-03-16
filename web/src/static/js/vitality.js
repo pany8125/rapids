@@ -5,8 +5,36 @@
  */
 
 // Load WOW.js on non-touch devices
-var isPhoneDevice = "ontouchstart" in document.documentElement;
 var restPath = "/rapids-rest";
+function Err(msg) {
+    dialog("danger", msg);
+}
+function Info(msg) {
+    dialog("warning", msg);
+}
+function Ok(msg) {
+    dialog("success", msg);
+}
+function dialog(type, msg) {
+    var windowWidth = $(window).width(),
+        $alert = $(".alert.alert-" + type),
+        $aWidth = windowWidth - 10;
+    $alert.alert().removeClass("hide").css({
+        "left": (windowWidth - $aWidth)/2,
+        "width": $aWidth
+    }).find("span").html(msg);
+    
+}
+function commonError(response, callback) {
+    if(callback) {
+        callback(response);
+    }else{
+        if(response.status == 403) {
+            window.location.href = "index.html";
+        }
+    }
+}
+var isPhoneDevice = "ontouchstart" in document.documentElement;
 $(document).ready(function() {
     if (isPhoneDevice) {
         //mobile
@@ -18,6 +46,9 @@ $(document).ready(function() {
         })
         wow.init();
     }
+    $(".alert .close").on("click", function () {
+        $(this).parent(".alert").addClass("hide");
+    })
 });
 
 (function($) {
@@ -124,24 +155,15 @@ $(document).ready(function() {
 
     var loader;
     $.ajaxSetup( {
-        dataType: 'json',
         contentType: "application/json; charset=utf-8",
         beforeSend: function () {
-            loader = $("#fakeloader").fakeLoader({
-                timeToHide:-1,
-                bgColor:"#C2B49A",
-                spinner:"spinner1"
-            });
+            $.LoadingOverlay("show");
         },
-        error: function () {
-
+        error: function (response) {
+            commonError(response)
         },
         complete: function(jqXHR, textStatus, errorMsg){
-            if(loader) {
-                setTimeout(function () {
-                    loader.fadeOut();
-                }, 2000)
-            }
+            $.LoadingOverlay("hide");
         }
     } );
 

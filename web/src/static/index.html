@@ -45,7 +45,6 @@
     <!-- Style Switcher CSS - Demo Purposes Only! -->
     <link id="changeable-colors" rel="stylesheet" href="css/vitality-tan.css">
     <link href="demo/style-switcher.css" rel="stylesheet">
-    <link href="css/fakeLoader.css" rel="stylesheet">
     <!-- /build -->
 
 </head>
@@ -53,7 +52,7 @@
 
 <!-- NOTE: Use the .modern or .vintage class to the body element below to see different font pairings! -->
 
-<body id="page-top" class="modern" style="background-color: #C2B49A;">
+<body id="page-top" class="modern">
 
     <!-- Navigation -->
     <!-- NOTE: .navbar-default and .navbar-inverse are both supported with this theme. -->
@@ -84,7 +83,7 @@
     <!-- Header -->
     <header class="page" style="background-color: #C2B49A">
         <div class="intro-content">
-            <p>记忆学习</p>
+            <p>记忆重构</p>
         </div>
         <div class="scroll-down">
             <a style="display: none;" class="next-btn btn page-scroll" href="#login"><i class="fa fa-angle-down fa-fw"></i></a>
@@ -119,7 +118,18 @@
         </div>
     </section>
 
-    <div id="fakeloader"></div>
+    <div class="pop alert alert-success hide fade in">
+        <a href="#" class="close">&times;</a>
+        <strong>成功！</strong><span></span>
+    </div>
+    <div class="pop alert alert-warning hide fade in">
+        <a href="#" class="close">&times;</a>
+        <strong>警告！</strong><span></span>
+    </div>
+    <div class="pop alert alert-danger hide fade in">
+        <a href="#" class="close">&times;</a>
+        <strong>错误！</strong><span></span>
+    </div>
 
         <!-- Core Scripts -->
     <script src="vendor/jquery/jquery.min.js"></script>
@@ -136,7 +146,7 @@
     <script src="vendor/formstone/background.js"></script>
     <script src="vendor/mixitup/jquery.mixitup.js"></script>
     <script src="vendor/wow/wow.min.js"></script>
-    <script src="js/fakeLoader.js"></script>
+    <script src="vendor/jquery/plugins/loadingoverlay.min.js"></script>
     <!-- Vitality Theme Scripts -->
     <script src="js/vitality.js"></script>
     <script type="text/javascript">
@@ -144,6 +154,7 @@
             $.ajax({
                 url: restPath + "/checkSession",
                 success: function () {
+                    alert(2)
                     window.location.href="packages.html";
                 },
                 error: function (response) {
@@ -169,7 +180,13 @@
                         "password": pwd
                     }),
                     error: function (response) {
-
+                        if(404 == response.status) {
+                            Err("用户名或密码不正确");
+                        }
+                    },
+                    success: function () {
+                        alert(1)
+                        window.location.href="packages.html"
                     }
                 })
             })
