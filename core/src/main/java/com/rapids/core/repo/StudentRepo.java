@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface StudentRepo extends PagingAndSortingRepository<Student, Long> {
+
+    Student findByNameAndPassword(String name, String password);
 }
