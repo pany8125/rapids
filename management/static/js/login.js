@@ -31,7 +31,7 @@ var encode64 = function(input) {
     return output;
 }
 
-var path="/clotho-management";
+var path="/rapids-management";
 
 Ext.onReady(function() {
 	//Ext.QuickTips.init();
@@ -103,7 +103,6 @@ Ext.onReady(function() {
 	
 	var win = new Ext.Window({
 		el : "win",
-		
 		title : "重构记忆后台管理系统",
 		width : 300,
 		height : 180,
@@ -154,7 +153,7 @@ Ext.onReady(function() {
 		
         form.getForm().submit({
 			waitTitle : '系统信息',
-			url: path + '/login/loginValid',   
+			url: path + '/login/loginValid',   //TODO:提交URL
  			method : 'post',   //指定发送方式
  			waitMsg:"正在验证登录用户,请稍候..."  ,
 			clientValidation: true,

@@ -31,7 +31,7 @@ var topPanel = Ext.create('Ext.toolbar.Toolbar', {
 //左侧菜单栏
 var westPanel = Ext.create('Ext.tree.Panel', {
 	region: 'west',
-	title: '运营系统',
+	title: '重构记忆后台系统',
 	width: 180,
 	collapsible: true,
 	rootVisible: false,
@@ -41,7 +41,7 @@ var westPanel = Ext.create('Ext.tree.Panel', {
 		fields: ['id', 'text', 'leaf', 'url'],
 		proxy: {
 			type: 'ajax',
-			url: path + '/menu/list.do?adminID=' + adminID
+			url: path + '/menu/list.do?adminID=' + adminID //TODO
 		},
 		listeners: {
 			load: function(store, records){

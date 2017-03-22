@@ -46,7 +46,7 @@ var decode64 = function(input) {
 	return unescape(output);
 };
 
-var path = "/clotho-management", adminID = decode64(Ext.util.Cookies
+var path = "/rapids-management", adminID = decode64(Ext.util.Cookies
 		.get("adminId")), adminName = decode64(Ext.util.Cookies
 		.get("adminName"));
 var task = new Ext.util.DelayedTask(function() {
