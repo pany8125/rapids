@@ -3,6 +3,8 @@ package com.rapids.manage.controller;
 import com.rapids.core.domain.Sample;
 import com.rapids.core.repo.SampleRepo;
 import com.rapids.core.service.SampleService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,7 @@ public class SampleController {
 
     private @Autowired SampleRepo sampleRepo;
     private @Autowired SampleService sampleService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SampleController.class);
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.CREATED)
@@ -41,6 +44,7 @@ public class SampleController {
     @ResponseStatus(HttpStatus.OK)
     public void u(@PathVariable Integer id, @RequestBody Sample sample) {
         Sample dataBean = sampleRepo.findOne(id);
+        LOGGER.info("get sample: {}", sample);
         BeanUtils.copyProperties(sample, dataBean, "id");
         sampleService.save(dataBean);
     }
