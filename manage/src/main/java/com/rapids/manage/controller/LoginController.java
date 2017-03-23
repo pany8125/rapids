@@ -1,5 +1,6 @@
 package com.rapids.manage.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.rapids.core.domain.Admin;
 import com.rapids.core.service.AdminService;
 import com.rapids.manage.Util;
@@ -26,8 +27,6 @@ public class LoginController {
 
     /**
      * user info checked
-     * @param request
-     * @param model
      * @param uid
      * @param password
      * @return
@@ -41,13 +40,10 @@ public class LoginController {
             resp.setMsg("账号密码错误或者账号不存在");
             resp.setSuccess(false);
         }else{
-            admin.setId(a.getId());
-            SessionUtil.setLoginAdmin(request, admin);
             resp.setMsg(JSONObject.toJSONString(admin));
             resp.setSuccess(true);
             LOGGER.info(admin.getName()+" login");
         }
-
         return resp;
     }
 
