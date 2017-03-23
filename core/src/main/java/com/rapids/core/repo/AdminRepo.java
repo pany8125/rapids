@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface AdminRepo extends PagingAndSortingRepository<Admin, Long>{
 
     @Query(value = "SELECT * FROM Admin " +
-            "WHERE uid = ?1 AND passowrd = ?2 LIMIT 1", nativeQuery = true)
+            "WHERE uid = ?1 AND password = ?2 LIMIT 1", nativeQuery = true)
     Admin queryByUidAndPassword(String uid, String password);
 }
