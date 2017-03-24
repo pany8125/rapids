@@ -15,11 +15,11 @@ var topPanel = Ext.create('Ext.toolbar.Toolbar', {
 		        			 		return;
 					
 								Ext.Ajax.request({    
-									url: path + '/login/logout.do',
+									url: path + '/login/logout',
 									success:function(response,options){
 										Ext.util.Cookies.clear('adminName');
 										Ext.util.Cookies.clear('adminId');
-										top.location.href = '/management/login.html';
+										top.location.href = '/login.html';
 									}
 								});  
 		        		 })
@@ -41,7 +41,7 @@ var westPanel = Ext.create('Ext.tree.Panel', {
 		fields: ['id', 'text', 'leaf', 'url'],
 		proxy: {
 			type: 'ajax',
-			url: path + '/menu/list.do?adminID=' + adminID //TODO
+			url: path + '/menu/list?adminID=' + adminID
 		},
 		listeners: {
 			load: function(store, records){
