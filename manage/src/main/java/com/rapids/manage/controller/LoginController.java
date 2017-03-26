@@ -3,6 +3,7 @@ package com.rapids.manage.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.rapids.core.domain.Admin;
 import com.rapids.core.service.AdminService;
+import com.rapids.manage.Util;
 import com.rapids.manage.dto.ExtStatusEntity;
 import com.rapids.manage.security.SecurityConstant;
 import com.rapids.manage.security.SessionUtil;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,9 +44,7 @@ public class LoginController {
     @RequestMapping(value = "/loginValid", method = RequestMethod.POST)
     public ExtStatusEntity userLogin(HttpServletRequest request, Model model, @RequestParam("name") String uid, @RequestParam("password") String password) {
         ExtStatusEntity resp = new ExtStatusEntity();
-
-//        Admin admin = adminService.checkAdmin(uid, Util.toSHA1(password.getBytes()));
-        Admin admin = adminService.checkAdmin(uid, password);//TODO:测试完了改回来
+        Admin admin = adminService.checkAdmin(uid, DigestUtils.md5DigestAsHex(password.getBytes()));
         if (null == admin) {
             resp.setMsg("账号密码错误或者账号不存在");
             resp.setSuccess(false);

@@ -1,5 +1,4 @@
 var _adminid;
-var path = "123";//TODO:删除掉
 var adminPop = Ext.create('Ext.window.Window', {
     id: 'adminWin',
     title: '增加',
@@ -120,7 +119,7 @@ var rolePop = Ext.create('Ext.window.Window', {
                     fields: ['id', 'name'],
                     proxy: {
                         type: 'ajax',
-                        url: path + '/admin/rolelist.do',
+                        url: path + '/admin/rolelist',
                         reader: {
                             totalProperty: 'results',
                             root: 'rows'
@@ -183,7 +182,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
     selModel: {
         listeners: {
             select: function (rowModel, record, index, eOpts) {
-                eastPanel.getStore().load({params: {adminid: record.data.id}});
+                southPanel.getStore().load({params: {adminid: record.data.id}});
             }
         },
         mode: 'MULTI'
@@ -194,7 +193,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
         fields: ['id', 'uid', 'password', 'name', 'mobile', 'createBy', 'createTime'],
         proxy: {
             type: 'ajax',
-            url: path + '/admin/adminlist.do',
+            url: path + '/admin/list',
             reader: {
                 type: 'json',
                 totalProperty: "result",
@@ -258,14 +257,14 @@ var southPanel = Ext.create('Ext.grid.Panel', {
     columns: [
         {header: '角色ID', align: 'center', width: 100, dataIndex: 'id'},
         {header: '角色名称', align: 'center', width: 200, dataIndex: 'name'},
-        {header: '角色描述', align: 'center', dataIndex: 'description'}
+        {header: '角色描述', align: 'center', width: 300, dataIndex: 'description'}
     ],
     store: Ext.create('Ext.data.JsonStore', {
         storeId: 'southStore',
         fields: ['id', 'name', 'description'],
         proxy: {
             type: 'ajax',
-            url: path + '/admin/adminrole.do',
+            url: path + '/admin/adminrole',
             reader: {
                 totalProperty: 'results',
                 root: 'rows'
