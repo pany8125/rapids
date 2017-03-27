@@ -32,6 +32,11 @@ public class AdminService {
         return adminRepo.save(admin);
     }
 
+
+    public Admin getById(Integer id){
+        return adminRepo.findById(id);
+    }
+
     public Admin checkAdmin(String uid, String password){
         return adminRepo.queryByUidAndPassword(uid, password);
     }

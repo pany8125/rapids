@@ -13,7 +13,7 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Base64;
+import java.net.URLDecoder;
 import java.util.List;
 
 /**
@@ -57,22 +57,27 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/saveAdmin", method = RequestMethod.POST)
-    public ExtStatusEntity saveAdmin(@RequestParam("uid") String uid,
+    public ExtStatusEntity saveAdmin(@RequestParam(value = "id", required = false) Integer id,
+                                     @RequestParam("uid") String uid,
                                      @RequestParam("password") String password,
                                      @RequestParam("name") String name,
                                      @RequestParam("mobile") String mobile,
-                                     @RequestParam("adminId") String adminName) {
+                                     @RequestParam("adminName") String adminName) {
         ExtStatusEntity result = new ExtStatusEntity();
         try {
             Admin adminDTO = new Admin();
-            adminDTO.setUid(uid);
+            if (id == null) {
+                adminDTO.setUid(uid);
+                adminDTO.setCreateBy( URLDecoder.decode(adminName, "UTF-8"));
+            } else {
+                adminDTO = this.adminService.getById(id);
+            }
             adminDTO.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
             adminDTO.setName(name);
             adminDTO.setMobile(mobile);
-            adminDTO.setCreateBy(adminName);
             Admin admin = this.adminService.save(adminDTO);
             if (null == admin) {
-                result.setMsg("添加账号失败");
+                result.setMsg("添加或修改账号失败");
                 result.setSuccess(false);
             } else {
                 result.setMsg("succeed");

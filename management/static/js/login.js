@@ -163,6 +163,7 @@ Ext.onReady(function() {
 				d.setTime((new Date()).getTime()+60*60*1000);//cookie expires:1h
 				Ext.util.Cookies.set('adminName',encode64(admin.name),d);
 				Ext.util.Cookies.set('adminId',encode64(admin.id),d);
+				Ext.util.Cookies.set('loginName',admin.name,d);
         		if(window.parent){
         			window.parent.location.href = 'views/index.html';
         		}else{

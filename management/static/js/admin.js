@@ -13,7 +13,7 @@ var adminPop = Ext.create('Ext.window.Window', {
     items: [
         Ext.create('Ext.form.Panel', {
             id: 'adminForm',
-            url: path + '/admin/saveAdmin',
+            url: path + '/admin/saveAdmin?adminName='+adminName,
             layout: 'anchor',
             defaults: {
                 anchor: '80%',
@@ -25,9 +25,6 @@ var adminPop = Ext.create('Ext.window.Window', {
             defaultType: 'textfield',
             items: [{//隐藏域
                 name: 'id',
-                hidden: true
-            },{//隐藏域
-                name: 'adminId',
                 hidden: true
             }, {
 
@@ -61,7 +58,6 @@ var adminPop = Ext.create('Ext.window.Window', {
                     Ext.Msg.alert('系统提示', '请按要求填写表格！');
                     return;
                 }
-                Ext.getCmp('adminForm').adminId = adminID;
                 Ext.getCmp('adminForm').submit({
                     waitTitle: '系统提示',
                     waitMsg: '保存中......',
@@ -219,10 +215,18 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
             xtype: 'button',
             text: '修改用户',
             handler: function () {
-                Ext.getCmp('adminForm').getForm().reset();
-                adminPop.setTitle('修改用户');
+                var models = centerPanel.getSelectionModel().getSelection();
+                if (models.length <= 0) {
+                    Ext.Msg.alert('系统提示', '请选择要编辑的数据');
+                    return;
+                }
+                adminPop.setTitle('编辑');
                 adminPop.show();
+                Ext.getCmp('adminForm').loadRecord(models[0]);
+                Ext.getCmp('adminForm').getForm().findField('uid').setReadOnly(true);
+                Ext.getCmp('adminForm').getForm().findField('password').setValue();
             }
+
         },
         {
             xtype: 'button',
