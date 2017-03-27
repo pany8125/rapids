@@ -60,11 +60,14 @@ public class AdminService {
 
     @Transactional
     public void delAdminRole(int id){
-        this.adminRoleMemberRepo.delete((long)id);
+        this.adminRoleMemberRepo.delete((long) id);
     }
 
     @Transactional
-    public void delAdmin(long id){
-        this.adminRepo.delete(id);
+    public void delAdmin(int id){
+        this.adminRoleMemberRepo.deleteByAdminId(id);
+        Admin admin = new Admin();
+        admin.setId(id);
+        this.adminRepo.delete(admin);
     }
 }

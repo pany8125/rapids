@@ -26,6 +26,9 @@ var adminPop = Ext.create('Ext.window.Window', {
             items: [{//隐藏域
                 name: 'id',
                 hidden: true
+            },{//隐藏域
+                name: 'adminId',
+                hidden: true
             }, {
 
                 fieldLabel: '用户账号',
@@ -58,7 +61,7 @@ var adminPop = Ext.create('Ext.window.Window', {
                     Ext.Msg.alert('系统提示', '请按要求填写表格！');
                     return;
                 }
-
+                Ext.getCmp('adminForm').adminId = adminID;
                 Ext.getCmp('adminForm').submit({
                     waitTitle: '系统提示',
                     waitMsg: '保存中......',
@@ -233,13 +236,13 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
                 Ext.Msg.confirm('系统提示', '您确认要删除吗?', function (option) {
                     if ('yes' === option) {
                         Ext.Ajax.request({
-                            url: path + '/admin/delAdmin?id=' + admin.get('id'),
+                            url: path + '/admin/delAdmin?id=' + admin[0].data.id,
                             scope: this,
                             async: true,
                             success: function (response, options) {
                                 Ext.Msg.alert("系统提示", "删除成功");
                                 centerPanel.getStore().reload();
-                                eastPanel.getStore().reload();
+                                southPanel.getStore().reload();
                             },
                             failure: function (form, action) {
                                 Ext.Msg.alert('系统提示', action.result.msg);
@@ -253,7 +256,6 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 });
 
 function delAdminRole(records) {
-    Ext.Msg.alert("系统提示", "id :",records[0].get('id'));
     Ext.Ajax.request({
         url: path + '/admin/delAdminRole?id=' + records[0].get('id'),
         scope: this,

@@ -13,6 +13,7 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -60,8 +61,7 @@ public class AdminController {
                                      @RequestParam("password") String password,
                                      @RequestParam("name") String name,
                                      @RequestParam("mobile") String mobile,
-                                     @CookieValue("adminName") String adminName,
-                                     HttpServletRequest request) {
+                                     @RequestParam("adminId") String adminName) {
         ExtStatusEntity result = new ExtStatusEntity();
         try {
             Admin adminDTO = new Admin();
@@ -136,7 +136,7 @@ public class AdminController {
     public ExtStatusEntity delAdminRole(@RequestParam("id") int id) {
         ExtStatusEntity entity = new ExtStatusEntity();
         try {
-            this.adminService.delAdmin((long) id);
+            this.adminService.delAdmin(id);
             entity.setMsg("succeed");
             entity.setSuccess(true);
         } catch (Exception ex) {
