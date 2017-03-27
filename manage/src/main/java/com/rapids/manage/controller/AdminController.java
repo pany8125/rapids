@@ -2,20 +2,17 @@ package com.rapids.manage.controller;
 
 import com.rapids.core.domain.Admin;
 import com.rapids.core.domain.AdminRole;
+import com.rapids.core.domain.AdminRoleMember;
 import com.rapids.core.service.AdminService;
 import com.rapids.manage.dto.ExtEntity;
-import com.rapids.manage.security.SecurityConstant;
+import com.rapids.manage.dto.ExtStatusEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -40,7 +37,7 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/adminrole")
-    public ExtEntity<AdminRole> getAdminRoleListByAdminid(@RequestParam("adminid")Integer adminid){
+    public ExtEntity<AdminRole> getAdminRoleListByAdminid(@RequestParam("adminid") Integer adminid) {
         List<AdminRole> list = this.adminService.getAdminRoleList(adminid);
         ExtEntity<AdminRole> entity = new ExtEntity<>();
         entity.setResult(list.size());
@@ -58,5 +55,97 @@ public class AdminController {
         return list;
     }
 
+    @RequestMapping(value = "/saveAdmin", method = RequestMethod.POST)
+    public ExtStatusEntity saveAdmin(@RequestParam("uid") String uid,
+                                     @RequestParam("password") String password,
+                                     @RequestParam("name") String name,
+                                     @RequestParam("mobile") String mobile,
+                                     @CookieValue("adminName") String adminName,
+                                     HttpServletRequest request) {
+        ExtStatusEntity result = new ExtStatusEntity();
+        try {
+            Admin adminDTO = new Admin();
+            adminDTO.setUid(uid);
+            adminDTO.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+            adminDTO.setName(name);
+            adminDTO.setMobile(mobile);
+            adminDTO.setCreateBy(adminName);
+            Admin admin = this.adminService.save(adminDTO);
+            if (null == admin) {
+                result.setMsg("添加账号失败");
+                result.setSuccess(false);
+            } else {
+                result.setMsg("succeed");
+                result.setSuccess(true);
+            }
+        } catch (Exception ex) {
+            LOGGER.error("save admin error", ex);
+            result.setMsg("保存失败");
+            result.setSuccess(false);
+        }
+        LOGGER.info("saveAdmin");
+        return result;
+    }
+
+    @RequestMapping(value = "/saveAdminRoleMember", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    ExtStatusEntity saveAdminRoleMember(@RequestParam("adminid") int adminId,
+                                        @RequestParam("roleid") int roleId, HttpServletRequest request) {
+        ExtStatusEntity result = new ExtStatusEntity();
+        try {
+            AdminRoleMember adminRoleMember = new AdminRoleMember();
+            adminRoleMember.setAdminId(adminId);
+            adminRoleMember.setRoleId(roleId);
+            AdminRoleMember a = this.adminService.saveAdminRoleMember(adminRoleMember);
+            if (null == a) {
+                result.setMsg("添加权限失败");
+                result.setSuccess(false);
+            } else {
+                result.setMsg("succeed");
+                result.setSuccess(true);
+            }
+        } catch (Exception ex) {
+            LOGGER.error("saveAdminRoleMember error", ex);
+            result.setMsg("保存失败");
+            result.setSuccess(false);
+        }
+        LOGGER.info("saveAdminRoleMember");
+        return result;
+    }
+
+
+    @RequestMapping(value = "/delAdminRole")
+    public ExtStatusEntity delAdminRole(@RequestParam("id") int id, HttpServletRequest request) {
+        ExtStatusEntity entity = new ExtStatusEntity();
+        try {
+            this.adminService.delAdminRole(id);
+            entity.setMsg("succeed");
+            entity.setSuccess(true);
+        } catch (Exception ex) {
+            LOGGER.error("delAdminRole error", ex);
+            entity.setMsg("删除失败");
+            entity.setSuccess(false);
+        }
+        LOGGER.info("delAdminRole");
+        return entity;
+    }
+
+
+    @RequestMapping(value = "/delAdmin")
+    public ExtStatusEntity delAdminRole(@RequestParam("id") int id) {
+        ExtStatusEntity entity = new ExtStatusEntity();
+        try {
+            this.adminService.delAdmin((long) id);
+            entity.setMsg("succeed");
+            entity.setSuccess(true);
+        } catch (Exception ex) {
+            LOGGER.error("delAdmin error", ex);
+            entity.setMsg("删除失败");
+            entity.setSuccess(false);
+        }
+        LOGGER.info("delAdmin");
+        return entity;
+    }
 
 }

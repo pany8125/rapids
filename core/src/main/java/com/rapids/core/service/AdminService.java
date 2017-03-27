@@ -2,12 +2,15 @@ package com.rapids.core.service;
 
 import com.rapids.core.domain.Admin;
 import com.rapids.core.domain.AdminRole;
+import com.rapids.core.domain.AdminRoleMember;
 import com.rapids.core.domain.Menu;
 import com.rapids.core.repo.AdminRepo;
+import com.rapids.core.repo.AdminRoleMemberRepo;
 import com.rapids.core.repo.AdminRoleRepo;
 import com.rapids.core.repo.MenuRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,9 +25,11 @@ public class AdminService {
     private MenuRepo menuRepo;
     @Autowired
     private AdminRoleRepo adminRoleRepo;
+    @Autowired
+    private AdminRoleMemberRepo adminRoleMemberRepo;
 
-    public void save(Admin admin){
-        adminRepo.save(admin);
+    public Admin save(Admin admin){
+        return adminRepo.save(admin);
     }
 
     public Admin checkAdmin(String uid, String password){
@@ -46,5 +51,20 @@ public class AdminService {
 
     public List<AdminRole> getActiveRoleList(){
         return adminRoleRepo.findByStatus("ACTIVE");
+    }
+
+
+    public AdminRoleMember saveAdminRoleMember(AdminRoleMember adminRoleMember){
+        return adminRoleMemberRepo.save(adminRoleMember);
+    }
+
+    @Transactional
+    public void delAdminRole(int id){
+        this.adminRoleMemberRepo.delete((long)id);
+    }
+
+    @Transactional
+    public void delAdmin(long id){
+        this.adminRepo.delete(id);
     }
 }

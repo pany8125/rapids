@@ -1,8 +1,9 @@
 package com.rapids.core.domain;
 
+import com.sun.javafx.beans.IDProperty;
 import lombok.Data;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -12,8 +13,11 @@ import java.io.Serializable;
  */
 
 @Data
-// @Entity
+@Entity
 public class AdminRoleMember{
-	private int adminId;
-	private int roleId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	private Integer adminId;
+	private Integer roleId;
 }

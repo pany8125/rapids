@@ -13,7 +13,7 @@ var adminPop = Ext.create('Ext.window.Window', {
     items: [
         Ext.create('Ext.form.Panel', {
             id: 'adminForm',
-            url: path + '/admin/saveAdmin.do',
+            url: path + '/admin/saveAdmin',
             layout: 'anchor',
             defaults: {
                 anchor: '80%',
@@ -95,7 +95,7 @@ var rolePop = Ext.create('Ext.window.Window', {
     items: [
         Ext.create('Ext.form.Panel', {
             id: 'roleForm',
-            url: path + '/admin/saveAdminRoleMember.do',
+            url: path + '/admin/saveAdminRoleMember',
             layout: 'anchor',
             defaults: {
                 anchor: '80%',
@@ -135,6 +135,7 @@ var rolePop = Ext.create('Ext.window.Window', {
         {
             text: '保存',
             handler: function () {
+                Ext.Msg.alert('保存:adminid',_adminid);
                 Ext.getCmp('adminid').setValue(_adminid);
                 var roleForm = Ext.getCmp('roleForm').getForm();
                 if (!roleForm.isValid()) {
@@ -149,7 +150,7 @@ var rolePop = Ext.create('Ext.window.Window', {
                             Ext.Msg.alert('系统提示', action.result.msg);
                         } else {
                             Ext.getCmp('roleWin').hide();
-                            eastPanel.getStore().reload();
+                            southPanel.getStore().reload();
                             Ext.Msg.alert('系统提示', '保存成功！');
                         }
                     },
@@ -224,23 +225,42 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
             xtype: 'button',
             text: '删除用户',
             handler: function () {
-                Ext.getCmp('adminForm').getForm().reset();
-                adminPop.setTitle('增加用户');
-                adminPop.show();
+                var admin = centerPanel.getSelectionModel().getSelection();
+                if (admin.length == 0) {
+                    Ext.Msg.alert('系统提示', '请选择要删除的用户。');
+                    return;
+                }
+                Ext.Msg.confirm('系统提示', '您确认要删除吗?', function (option) {
+                    if ('yes' === option) {
+                        Ext.Ajax.request({
+                            url: path + '/admin/delAdmin?id=' + admin.get('id'),
+                            scope: this,
+                            async: true,
+                            success: function (response, options) {
+                                Ext.Msg.alert("系统提示", "删除成功");
+                                centerPanel.getStore().reload();
+                                eastPanel.getStore().reload();
+                            },
+                            failure: function (form, action) {
+                                Ext.Msg.alert('系统提示', action.result.msg);
+                            }
+                        });
+                    }
+                });
             }
         }
     ]
 });
 
 function delAdminRole(records) {
-    var admins = centerPanel.getSelectionModel().getSelection();
+    Ext.Msg.alert("系统提示", "id :",records[0].get('id'));
     Ext.Ajax.request({
-        url: path + '/admin/delAdminRole.do?id=' + records[0].get('id') + '&userId=' + admins[0].get('id'),
+        url: path + '/admin/delAdminRole?id=' + records[0].get('id'),
         scope: this,
         async: true,
         success: function (response, options) {
             Ext.Msg.alert("系统提示", "删除成功");
-            eastPanel.getStore().reload();
+            southPanel.getStore().reload();
         },
         failure: function (form, action) {
             Ext.Msg.alert('系统提示', action.result.msg);
@@ -290,7 +310,7 @@ var southPanel = Ext.create('Ext.grid.Panel', {
             xtype: 'button',
             text: '删除角色',
             handler: function () {
-                var roles = eastPanel.getSelectionModel().getSelection();
+                var roles = southPanel.getSelectionModel().getSelection();
                 if (roles.length == 0) {
                     Ext.Msg.alert('系统提示', '请选择要删除的角色。');
                     return;
