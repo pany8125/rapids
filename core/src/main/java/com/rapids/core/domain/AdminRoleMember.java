@@ -14,6 +14,9 @@ import java.io.Serializable;
 
 @Data
 @Entity
+@Table(
+		indexes = @Index(columnList = "adminId, roleId", unique = true)
+)
 public class AdminRoleMember{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

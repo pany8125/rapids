@@ -134,7 +134,6 @@ var rolePop = Ext.create('Ext.window.Window', {
         {
             text: '保存',
             handler: function () {
-                Ext.Msg.alert('保存:adminid',_adminid);
                 Ext.getCmp('adminid').setValue(_adminid);
                 var roleForm = Ext.getCmp('roleForm').getForm();
                 if (!roleForm.isValid()) {
