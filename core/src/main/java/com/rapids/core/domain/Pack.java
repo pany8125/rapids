@@ -22,6 +22,12 @@ public class Pack {
 
     private Type type;
 
+    private String description;
+
+
+    private String createTime;
+    private String createBy;
+
     @SuppressWarnings({"unused", "WeakerAccess"})
     public enum Type {
         ENGLISH, MATH, LITERATURE
