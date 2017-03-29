@@ -103,8 +103,9 @@ var knowledgePop = Ext.create('Ext.window.Window', {
 				name: 'id',
 				hidden: true
 			},{
+				fieldLabel: '知识包id',
 				name: 'packid',
-				hidden: true
+				readonly: true
 			},
 				{
 					fieldLabel: '知识点名称',
