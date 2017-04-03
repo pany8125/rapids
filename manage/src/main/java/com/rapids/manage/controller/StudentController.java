@@ -1,13 +1,18 @@
 package com.rapids.manage.controller;
 
-import com.rapids.core.domain.*;
-import com.rapids.core.service.PackService;
+import com.rapids.core.domain.Student;
+import com.rapids.core.domain.Grade;
+import com.rapids.core.service.GradeService;
+import com.rapids.core.service.GradeService;
 import com.rapids.manage.dto.ExtEntity;
 import com.rapids.manage.dto.ExtStatusEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URLDecoder;
 import java.util.List;
@@ -16,96 +21,91 @@ import java.util.List;
  * Created by scott on 3/22/17.
  */
 @RestController
-@RequestMapping("/pack")
+@RequestMapping("/grade")
 public class StudentController {
     private static final Logger LOGGER = LoggerFactory.getLogger(StudentController.class);
-
+    
     @Autowired
-    private PackService packService;
+    private GradeService gradeService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ExtEntity<Pack> getPackList() {
-        List<Pack> list = this.packService.getPackList();
-        ExtEntity<Pack> entity = new ExtEntity<>();
+    public ExtEntity<Grade> getGradeList() {
+        List<Grade> list = this.gradeService.getGradeList();
+        ExtEntity<Grade> entity = new ExtEntity<>();
         entity.setResult(list.size());
         entity.setRows(list);
-        LOGGER.info("getPackList");
+        LOGGER.info("getGradeList");
         return entity;
     }
 
-    @RequestMapping(value = "/getKnowledge")
-    public ExtEntity<Knowledge> getKnowledgeListByTitle(@RequestParam("title") String title) {
-        List<Knowledge> list = this.packService.getKnowledgeListByTitle(title);
-        ExtEntity<Knowledge> entity = new ExtEntity<>();
+    @RequestMapping(value = "/getStudent")
+    public ExtEntity<Student> getStudentListByTitle(@RequestParam("sMobile") String mobile) {
+        List<Student> list = this.gradeService.getStudentListByMobile(mobile);
+        ExtEntity<Student> entity = new ExtEntity<>();
         entity.setResult(list.size());
         entity.setRows(list);
-        LOGGER.info("getKnowledgeListByTitle");
+        LOGGER.info("getStudentListByMobile");
         return entity;
     }
 
 
-    @RequestMapping(value = "/savePack", method = RequestMethod.POST)
-    public ExtStatusEntity savePack(@RequestParam(value = "id", required = false) Long id,
+    @RequestMapping(value = "/saveGrade", method = RequestMethod.POST)
+    public ExtStatusEntity saveGrade(@RequestParam(value = "id", required = false) Long id,
                                      @RequestParam("name") String name,
-                                     @RequestParam("type") String type,
-                                     @RequestParam("description") String description,
-                                     @RequestParam("adminName") String adminName) {
+                                     @RequestParam("gradeYear") String gradeYear,
+                                     @RequestParam("description") String description) {
         ExtStatusEntity result = new ExtStatusEntity();
         try {
-            Pack packDTO = new Pack();
-            if (id == null) {
-                packDTO.setCreateBy( URLDecoder.decode(adminName, "UTF-8"));
-            } else {
-                packDTO = this.packService.getById(id);
-            }
-            packDTO.setName(name);
-            packDTO.setType(Pack.Type.MATH);
-            packDTO.setDescription(description);
-            Pack pack = this.packService.save(packDTO);
-            if (null == pack) {
-                result.setMsg("添加或修改账号失败");
+            Grade gradeDTO = new Grade();
+            gradeDTO.setId(id);
+            gradeDTO.setName(name);
+            gradeDTO.setGradeYear(gradeYear);
+            gradeDTO.setDescription(description);
+            Grade grade = this.gradeService.save(gradeDTO);
+            if (null == grade) {
+                result.setMsg("添加或修改班级失败");
                 result.setSuccess(false);
             } else {
                 result.setMsg("succeed");
                 result.setSuccess(true);
             }
         } catch (Exception ex) {
-            LOGGER.error("save admin error", ex);
+            LOGGER.error("save grade error", ex);
             result.setMsg("保存失败");
             result.setSuccess(false);
         }
-        LOGGER.info("savePack");
+        LOGGER.info("saveGrade");
         return result;
     }
 
-    @RequestMapping(value = "/saveKnowledge", method = RequestMethod.POST)
-    public ExtStatusEntity saveKnowledge(@RequestParam(value = "id", required = false) Long id,
-                                     @RequestParam("packId") Long packId,
+    @RequestMapping(value = "/saveStudent", method = RequestMethod.POST)
+    public ExtStatusEntity saveStudent(@RequestParam(value = "id", required = false) Long id,
+                                     @RequestParam("gradeId") Long gradeId,
                                      @RequestParam("name") String name,
-                                     @RequestParam("title") String title,
-                                     @RequestParam("description") String description,
-                                     @RequestParam("descPic") String descPic,
-                                     @RequestParam("memo") String memo,
-                                     @RequestParam("memoPic") String memoPic,
+                                     @RequestParam("password") String password,
+                                     @RequestParam("age") Integer age,
+                                     @RequestParam("email") String email,
+                                     @RequestParam("mobile") String mobile,
+                                     @RequestParam("sex") Integer sex,
                                      @RequestParam("adminName") String adminName) {
         ExtStatusEntity result = new ExtStatusEntity();
         try {
-            Knowledge knowledgeDTO = new Knowledge();
+            Student studentDTO = new Student();
             if (id == null) {
-                knowledgeDTO.setEditor(URLDecoder.decode(adminName, "UTF-8"));
-                knowledgeDTO.setPackId(packId);
+                studentDTO.setEditor(URLDecoder.decode(adminName, "UTF-8"));
             } else {
-                knowledgeDTO = this.packService.getKnowledgeById(id);
+                studentDTO = this.gradeService.getStudentById(id);
             }
-            knowledgeDTO.setName(name);
-            knowledgeDTO.setTitle(title);
-            knowledgeDTO.setDescription(description);
-            knowledgeDTO.setDescPic(descPic);
-            knowledgeDTO.setMemo(memo);
-            knowledgeDTO.setMemoPic(memoPic);
-            Knowledge knowledge = this.packService.saveKnowledge(knowledgeDTO);
+            studentDTO.setGradeId(gradeId);
+            studentDTO.setName(name);
+            studentDTO.setPassword(password);
+            studentDTO.setAge(age);
+            studentDTO.setEmail(email);
+            studentDTO.setSex(sex);
+            studentDTO.setMobile(mobile);
+            Student knowledge = this.gradeService.saveStudent(studentDTO);
             if (null == knowledge) {
-                result.setMsg("添加或修改账号失败");
+                result.setMsg("添加或修改学生失败");
                 result.setSuccess(false);
             } else {
                 result.setMsg("succeed");
@@ -116,42 +116,42 @@ public class StudentController {
             result.setMsg("保存失败");
             result.setSuccess(false);
         }
-        LOGGER.info("saveKnowledge");
+        LOGGER.info("saveStudent");
         return result;
     }
 
 
 
-    @RequestMapping(value = "/delKnowledge")
-    public ExtStatusEntity delKnowledge(@RequestParam("id") Long id) {
+    @RequestMapping(value = "/delStudent")
+    public ExtStatusEntity delStudent(@RequestParam("id") Long id) {
         ExtStatusEntity entity = new ExtStatusEntity();
         try {
-            this.packService.delKnowledge(id);
+            this.gradeService.delStudent(id);
             entity.setMsg("succeed");
             entity.setSuccess(true);
         } catch (Exception ex) {
-            LOGGER.error("delKnowledge error", ex);
+            LOGGER.error("delStudent error", ex);
             entity.setMsg("删除失败");
             entity.setSuccess(false);
         }
-        LOGGER.info("delKnowledge");
+        LOGGER.info("delStudent");
         return entity;
     }
 
 
-    @RequestMapping(value = "/delPack")
-    public ExtStatusEntity delPack(@RequestParam("id") Long id) {
+    @RequestMapping(value = "/delGrade")
+    public ExtStatusEntity delGrade(@RequestParam("id") Long id) {
         ExtStatusEntity entity = new ExtStatusEntity();
         try {
-            this.packService.delPack(id);
+            this.gradeService.delGrade(id);
             entity.setMsg("succeed");
             entity.setSuccess(true);
         } catch (Exception ex) {
-            LOGGER.error("delPack error", ex);
+            LOGGER.error("delGrade error", ex);
             entity.setMsg("删除失败");
             entity.setSuccess(false);
         }
-        LOGGER.info("delPack");
+        LOGGER.info("delGrade");
         return entity;
     }
 

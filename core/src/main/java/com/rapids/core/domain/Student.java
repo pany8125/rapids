@@ -20,6 +20,7 @@ public class Student {
     private String password;
     private String name;
     private Integer age;
+    private Integer sex;
     private String email;
     private Date createTime;
     private String editor;
