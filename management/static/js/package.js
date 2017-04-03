@@ -214,8 +214,8 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 			text: '增加知识包',
 			handler: function () {
 				Ext.getCmp('packForm').getForm().reset();
-				adminPop.setTitle('增加知识包');
-				adminPop.show();
+				packPop.setTitle('增加知识包');
+				packPop.show();
 			}
 		},
 		{
@@ -357,15 +357,15 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 		{
 			xtype: 'textfield',
 			fieldLabel: '标题',
-			name: 'title',
-			id: 'title'
+			name: 'kTitle',
+			id: 'kTitle'
 		},
 		{
 			xtype: 'button',
 			text: '查询',
 			handler: function () {
 				southPanel.getStore().load({url: path + '/pack/getKnowledge',
-					params: {title: Ext.getCmp('title').getValue()}});
+					params: {title: Ext.getCmp('kTitle').getValue()}});
 				southPanel.clearValue();
 			}
 		}
