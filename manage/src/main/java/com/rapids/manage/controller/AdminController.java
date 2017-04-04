@@ -28,10 +28,12 @@ public class AdminController {
     private AdminService adminService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ExtEntity<Admin> getAdminList() {
-        List<Admin> list = this.adminService.getAdminList();
+    public ExtEntity<Admin> getAdminList(
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit) {
+        List<Admin> list = this.adminService.getAdminList(page, limit);
         ExtEntity<Admin> entity = new ExtEntity<Admin>();
-        entity.setResult(list.size());
+        entity.setResult(adminService.countAdmin());
         entity.setRows(list);
         LOGGER.info("getAdminList");
         return entity;
@@ -68,7 +70,7 @@ public class AdminController {
             Admin adminDTO = new Admin();
             if (id == null) {
                 adminDTO.setUid(uid);
-                adminDTO.setCreateBy( URLDecoder.decode(adminName, "UTF-8"));
+                adminDTO.setCreateBy(URLDecoder.decode(adminName, "UTF-8"));
             } else {
                 adminDTO = this.adminService.getById(id);
             }

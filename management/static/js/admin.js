@@ -189,6 +189,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
     store: Ext.create('Ext.data.JsonStore', {
         autoLoad: true,
         storeId: 'centerStore',
+        pageSize: itemsPerPage, // 每页显示条数
         fields: ['id', 'uid', 'password', 'name', 'mobile', 'createBy', 'createTime'],
         proxy: {
             type: 'ajax',
@@ -255,7 +256,15 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
                 });
             }
         }
-    ]
+    ],
+    bbar: Ext.create('Ext.toolbar.Paging', {
+        store: Ext.data.StoreManager.get('centerStore'),
+        displayInfo: true,
+        displayMsg: '第{0}-{1}条，共{2}条',
+        emptyMsg: "没有数据",
+        beforePageText: '第',
+        afterPageText: '页，共 {0} 页'
+    })
 });
 
 function delAdminRole(records) {

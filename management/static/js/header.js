@@ -1,5 +1,7 @@
 var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
+var itemsPerPage = 10;   // 设置你想要的每页显示条数
+
 var decode64 = function(input) {
 	if(!isValid(input)){
 		Ext.MessageBox.alert('系统提示',"cookie超时,请重新登陆系统",function(){

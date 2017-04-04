@@ -9,6 +9,8 @@ import com.rapids.core.repo.AdminRoleMemberRepo;
 import com.rapids.core.repo.AdminRoleRepo;
 import com.rapids.core.repo.MenuRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +35,10 @@ public class AdminService {
     }
 
 
+    public long countAdmin(){
+        return adminRepo.count();
+    }
+
     public Admin getById(Integer id){
         return adminRepo.findById(id);
     }
@@ -45,8 +51,10 @@ public class AdminService {
         return menuRepo.getMenuListByAdminid(adminId, parent);
     }
 
-    public List<Admin> getAdminList(){
-        return (List)adminRepo.findAll();
+    public List<Admin> getAdminList(Integer page, Integer limit){
+        PageRequest pageRequest = new PageRequest(page-1, limit);
+        Page<Admin> admins = adminRepo.findAll(pageRequest);
+        return admins.getContent();
     }
 
     public List<AdminRole> getAdminRoleList(int adminId){
