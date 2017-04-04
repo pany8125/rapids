@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.DigestUtils;
@@ -26,26 +24,13 @@ import java.util.UUID;
 /**
  * @author David on 17/2/23.
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@SpringBootTest(classes = JavaConfigTest.class)
-//@EnableAutoConfiguration
-//@Import(CoreConfig.class)
-public class JavaConfigTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = InitTestData.class)
+@EnableAutoConfiguration
+@Import(CoreConfig.class)
+public class InitTestData {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(JavaConfigTest.class);
-    public static void main(String[] args) {
-        SpringApplication.run(JavaConfigTest.class, args);
-    }
-//    @Test
-    public void bootstrapAppFromJavaConfig() {
-
-        ApplicationContext context = new AnnotationConfigApplicationContext(CoreConfig.class);
-        PackRepo repo = context.getBean(PackRepo.class);
-        Pack pack = new Pack();
-        pack.setName("aaa");
-        repo.save(pack);
-        LOGGER.info("know list : {}", repo.findAll());
-    }
+    private static Logger LOGGER = LoggerFactory.getLogger(InitTestData.class);
 
     private @Autowired PackRepo packRepo;
     private @Autowired StudentRepo studentRepo;
@@ -54,20 +39,16 @@ public class JavaConfigTest {
     private @Autowired KnowledgeRepo knowledgeRepo;
     private @Autowired StudyService studyService;
 
-//    @Test
+    @Test
     public void initTestData() {
         Student student = createStu();
         Pack pack =  createPack();
         List<Knowledge> knows = createKnows(pack);
-        relaKnowsAndStudent(student, knows);
+        relaKnowsAndStudent(student, pack, knows);
         relaStudentAndPack(student, pack, knows);
 
     }
 
-//    @Test
-    public void testQuery() {
-        studyService.nextKnowledge(1);
-    }
 
     private void relaStudentAndPack(Student student, Pack pack, List<Knowledge> knowledges) {
         StuPackRela stuPackRela = new StuPackRela();
@@ -78,17 +59,19 @@ public class JavaConfigTest {
         stuPackRela.setLearnedNum(0);
         stuPackRela.setCreateTime(new Date());
         stuPackRela.setStatus(StuPackRela.Status.WAIT);
+        stuPackRela.setPackName(pack.getName());
         stuPackRelaRepo.save(stuPackRela);
         LOGGER.debug("pack student rela created! {}", stuPackRela);
     }
 
-    private void relaKnowsAndStudent(Student student, List<Knowledge> knows) {
+    private void relaKnowsAndStudent(Student student, Pack pack, List<Knowledge> knows) {
         knows.forEach(knowledge -> {
             StuKnowledgeRela stuKnowledgeRela = new StuKnowledgeRela();
             stuKnowledgeRela.setId(DigestUtils.md5DigestAsHex(UUID.randomUUID().toString().getBytes()));
             stuKnowledgeRela.setKnowledgeId(knowledge.getId());
             stuKnowledgeRela.setStudentId(student.getId());
-//            stuKnowledgeRela.setStatus(StuKnowledgeRela.Status.CREATED);
+            stuKnowledgeRela.setCreateTime(new Date());
+            stuKnowledgeRela.setPackId(pack.getId());
             stuKnowledgeRelaRepo.save(stuKnowledgeRela);
             LOGGER.debug("knows student rela created! {}", stuKnowledgeRela);
         });
@@ -103,8 +86,12 @@ public class JavaConfigTest {
             knowledge.setName("AAAA" + i);
             knowledge.setTitle("aaaa Title + " + i);
             knowledge.setPackId(pack.getId());
+            knowledge.setDescription("desc" + i);
+            knowledge.setDescPic("img/culinary/people/1.jpg");
+            knowledge.setMemo("没什么妙记，记住就好，死记硬背，我也没有什么好说得了");
+            knowledge.setMemoPic("img/culinary/people/1.jpg");
+            knowledge.setCreateTime(new Date());
             list.add(knowledge);
-
         }
         knowledgeRepo.save(list);
         LOGGER.debug("knows created! size : {}", list.size());

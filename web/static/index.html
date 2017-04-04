@@ -83,7 +83,7 @@
     <!-- Header -->
     <header class="page" style="background-color: #C2B49A">
         <div class="intro-content">
-            <p>记忆重构</p>
+            <p>重构记忆</p>
         </div>
         <div class="scroll-down">
             <a style="display: none;" class="next-btn btn page-scroll" href="#login"><i class="fa fa-angle-down fa-fw"></i></a>
@@ -98,7 +98,7 @@
                 </div>
             </div>
             <div class="row content-row">
-                <div class="col-md-4 loginWrapper">
+                <div class="col-md-4 centerWrapper">
                     <div class="pricing-item login">
                         <hr class="colored">
                         <form action="" method="post" autocomplete="off">
@@ -154,7 +154,6 @@
             $.ajax({
                 url: restPath + "/checkSession",
                 success: function () {
-                    alert(2)
                     window.location.href="packages.html";
                 },
                 error: function (response) {
@@ -168,7 +167,6 @@
                 e.preventDefault();
                 var name = $('input[name="loginName"]').val(),
                         pwd = $('input[name="password"]').val();
-                console.log(name, pwd);
                 if('' == name || '' == pwd) {
                     return;
                 }
@@ -180,12 +178,12 @@
                         "password": pwd
                     }),
                     error: function (response) {
+                        console.log(response);
                         if(404 == response.status) {
                             Err("用户名或密码不正确");
                         }
                     },
                     success: function () {
-                        alert(1)
                         window.location.href="packages.html"
                     }
                 })

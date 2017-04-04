@@ -29,7 +29,13 @@ public class StuKnowledgeRela {
      */
     private Integer reviewCount = 0;
     private Date lastReviewTime;
+    /**
+     * 是否激活
+     */
     private boolean enabled = false;
+    /**
+     * 激活时间
+     */
     private Date enableTime;
 
     private Date reviewTime;

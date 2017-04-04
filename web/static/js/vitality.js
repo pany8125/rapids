@@ -30,7 +30,11 @@ function commonError(response, callback) {
         callback(response);
     }else{
         if(response.status == 403) {
-            window.location.href = "index.html";
+            if(location.href.indexOf("index.html") == -1) {
+                window.location.href = "index.html";
+            }
+        }else if(response.status >= 500) {
+            Err("服务器出现故障,请联系系统管理员。")
         }
     }
 }
@@ -88,17 +92,6 @@ $(document).ready(function() {
         $('.navbar-toggle:visible').click();
     });
 
-    // Owl Carousel Settings
-    $(".about-carousel").owlCarousel({
-        items: 3,
-        navigation: true,
-        pagination: false,
-        navigationText: [
-            "<i class='fa fa-angle-left'></i>",
-            "<i class='fa fa-angle-right'></i>"
-        ],
-    });
-
     $(".portfolio-carousel").owlCarousel({
         singleItem: true,
         navigation: true,
@@ -111,18 +104,6 @@ $(document).ready(function() {
         mouseDrag: false,
         touchDrag: false,
         transitionStyle: "fadeUp"
-    });
-
-    $(".testimonials-carousel, .mockup-carousel").owlCarousel({
-        singleItem: true,
-        navigation: true,
-        pagination: true,
-        autoHeight: true,
-        navigationText: [
-            "<i class='fa fa-angle-left'></i>",
-            "<i class='fa fa-angle-right'></i>"
-        ],
-        transitionStyle: "backSlide"
     });
 
     $(".portfolio-gallery").owlCarousel({
@@ -164,6 +145,10 @@ $(document).ready(function() {
         },
         complete: function(jqXHR, textStatus, errorMsg){
             $.LoadingOverlay("hide");
+            var $alert = $(".alert");
+            // if($alert.hasClass("hide")) {
+               commonError(jqXHR);
+            // }
         }
     } );
 
