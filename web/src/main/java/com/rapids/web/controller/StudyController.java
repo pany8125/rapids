@@ -15,9 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,7 +30,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/study")
-@ConfigurationProperties("study")
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class StudyController extends LoginedController{
 
@@ -39,8 +39,18 @@ public class StudyController extends LoginedController{
     private @Autowired StuKnowledgeRelaRepo stuKnowledgeRelaRepo;
     private @Autowired KnowledgeRepo knowledgeRepo;
     private @Autowired StuPackRelaRepo stuPackRelaRepo;
-    private @Setter Integer seqCount;
     private @Setter Integer intervalLimit;
+
+    @GetMapping("checkStudyStatus")
+    public ResponseEntity checkStudyStatus() {
+        Student student = currentStudent();
+        StuKnowledgeRela stuKnowledgeRela = stuKnowledgeRelaRepo.hasDeleteStuKnowledgeRela(student.getId());
+        if(null == stuKnowledgeRela) {
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }else {
+            return new ResponseEntity(HttpStatus.FOUND);
+        }
+    }
 
     @GetMapping("/packages")
     @ResponseStatus(HttpStatus.OK)
@@ -48,34 +58,23 @@ public class StudyController extends LoginedController{
         return stuPackRelaRepo.findByStudentId(currentStudent().getId());
     }
 
-    @GetMapping("/activity")
-    @ResponseStatus(HttpStatus.CONTINUE)
-    public void activity() {
-        Student student = currentStudent();
-        if(studyService.checkStudyStatus(student.getId())) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Calendar calendar = Calendar.getInstance();
-            String startDate = simpleDateFormat.format(calendar.getTime());
-            calendar.add(Calendar.DATE, 1);
-            String endDate = simpleDateFormat.format(calendar.getTime());
-            StuKnowledgeRela stuKnowledgeRela = stuKnowledgeRelaRepo.findEnableByDay(startDate, endDate);
-            if(null == stuKnowledgeRela) {
-                stuKnowledgeRelaRepo.enableKnowledgeByStudentId(new Date(), student.getId(), seqCount);
-            }
-        }
-    }
-
     @SuppressWarnings("WeakerAccess")
     @GetMapping("/next")
     @ResponseStatus(HttpStatus.OK)
     public Knowledge next() {
         Student student = currentStudent();
-        Knowledge knowledge = studyService.nextKnowledge(student.getId());
+
+        StuKnowledgeRela stuKnowledgeRela = stuKnowledgeRelaRepo.findRequireByTime(student.getId(), System.currentTimeMillis());
+        if(null == stuKnowledgeRela) {
+            stuKnowledgeRela = stuKnowledgeRelaRepo.findRequire(student.getId());
+        }
+        if(null == stuKnowledgeRela) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+        }
+        Knowledge knowledge = knowledgeRepo.findOne(stuKnowledgeRela.getKnowledgeId());
         if(null == knowledge) {
             throw new HttpClientErrorException(HttpStatus.NO_CONTENT);
         }
-        StuKnowledgeRela stuKnowledgeRela =
-                stuKnowledgeRelaRepo.findByStudentIdAndKnowledgeId(student.getId(), knowledge.getId());
         return knowledge;
     }
 

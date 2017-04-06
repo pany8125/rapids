@@ -1,6 +1,7 @@
 package com.rapids.core.repo;
 
 import com.rapids.core.domain.StuKnowledgeRela;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -31,16 +32,20 @@ public interface StuKnowledgeRelaRepo extends PagingAndSortingRepository<StuKnow
     StuKnowledgeRela findRequire(Long studentId);
 
     @Query(value = "SELECT * FROM StuKnowledgeRela " +
-            "WHERE enableDate > ?1 AND enableDate < ?2", nativeQuery = true)
+            "WHERE enableTime > ?1 AND enableTime < ?2 LIMIT 1", nativeQuery = true)
     StuKnowledgeRela findEnableByDay(String startDateFormat, String endDateFormat);
 
-    @Query(value = "UPDATE StuKnowledgeRela set enable = 1 AND enableDate = ?1 " +
-            "WHERE studentId = ?2 AND enable = 0 LIMIT ?3", nativeQuery = true)
+    @Modifying
+    @Query(value = "UPDATE StuKnowledgeRela set enabled = 1, enableTime = ?1 " +
+            "WHERE studentId = ?2 AND enabled = 0 LIMIT ?3", nativeQuery = true)
     int enableKnowledgeByStudentId(Date enableDate, long studentId, int limit);
 
     @Query(value = "SELECT * FROM StuKnowledgeRela " +
             "WHERE studentId = ?1 AND knowledgeId = ?2", nativeQuery = true)
     StuKnowledgeRela findByStudentIdAndKnowledgeId(long studentId, long knowledgeId);
+
+    @Query(value = "SELECT * FROM StuKnowledgeRela WHERE studentId = ?1 and deleted = 0 LIMIT 1", nativeQuery = true)
+    StuKnowledgeRela hasDeleteStuKnowledgeRela(long studentId);
 
 
 }

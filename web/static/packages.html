@@ -85,7 +85,7 @@
                 </div>
             </div>
             <div class="row content-row">
-                <div class="col-md-4">
+                <div class="col-md-4 centerWrapper">
                     <div class="pricing-item">
                         <hr class="colored">
                         <ul class="list-group" id="packages-list">
@@ -118,7 +118,6 @@
     <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="js/classie.js"></script>
     <script src="js/cbpAnimatedHeader.js"></script>
-
     <!-- Plugin Scripts -->
     <script src="vendor/jquery.easing/jquery.easing.min.js"></script>
     <script src="vendor/owl-carousel/owl.carousel.js"></script>
@@ -133,20 +132,38 @@
     <script src="js/vitality.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $.ajax({
-                url: restPath + "/study/packages",
-                dataType: 'json',
-                success: function (resp) {
-                    if(resp && resp.length != 0) {
-                        var container = $("#packages-list").empty();
-                        for(var i = 0 ; i < resp.length; i ++) {
-                            var line = resp[i];
-                            container.append(
-                                    '<li class="list-group-item"><a href="study.html"><em>' + line.packName + '</em></a> </li>');
+            checkStudyStatus();
+            function checkStudyStatus() {
+                $.ajax({
+                    url: restPath + "/study/checkStudyStatus",
+                    success: function (entity, message, xhr) {
+                        if(xhr.status == 204) {
+                            getPackages();
+                        }
+                    },
+                    error: function(resp) {
+                        if(resp.status == 302) {
+                            window.location.href = "study.html";
                         }
                     }
-                }
-            });
+                });
+            }
+            function getPackages() {
+                $.ajax({
+                    url: restPath + "/study/packages",
+                    dataType: 'json',
+                    success: function (resp) {
+                        if(resp && resp.length != 0) {
+                            var container = $("#packages-list").empty();
+                            for(var i = 0 ; i < resp.length; i ++) {
+                                var line = resp[i];
+                                container.append(
+                                        '<li class="list-group-item"><a href="study.html"><em>' + line.packName + '</em></a> </li>');
+                            }
+                        }
+                    }
+                });
+            }
         })
     </script>
 

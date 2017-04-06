@@ -1,10 +1,8 @@
 package com.rapids.core.service;
 
-import com.rapids.core.domain.Knowledge;
 import com.rapids.core.domain.StuKnowledgeRela;
 import com.rapids.core.domain.StuPackRela;
 import com.rapids.core.domain.StudyLog;
-import com.rapids.core.repo.KnowledgeRepo;
 import com.rapids.core.repo.StuKnowledgeRelaRepo;
 import com.rapids.core.repo.StuPackRelaRepo;
 import com.rapids.core.repo.StudyLogRepo;
@@ -17,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -30,26 +30,10 @@ public class StudyService {
 
     private @Autowired StuPackRelaRepo stuPackRelaRepo;
     private @Autowired StuKnowledgeRelaRepo stuKnowledgeRelaRepo;
-    private @Autowired KnowledgeRepo knowledgeRepo;
     private @Autowired StudyLogRepo studyLogRepo;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private @Setter List<Integer> studyTimesRule;
     private static final Logger LOGGER = LoggerFactory.getLogger(StudyService.class);
-
-    public boolean checkStudyStatus(long studentId) {
-        StuPackRela stuPackRela = stuPackRelaRepo.findLastStudyPack(studentId);
-        return null != stuPackRela;
-    }
-
-    @Transactional
-    public Knowledge nextKnowledge(long studentId) {
-        StuKnowledgeRela stuKnowledgeRela = stuKnowledgeRelaRepo.findRequireByTime(studentId, System.currentTimeMillis());
-        if(null == stuKnowledgeRela) {
-            stuKnowledgeRela = stuKnowledgeRelaRepo.findRequire(studentId);
-        }
-        return null == stuKnowledgeRela ? null :
-                knowledgeRepo.findOne(stuKnowledgeRela.getKnowledgeId());
-    }
 
     /**
      * 将知识点记录到改学习包的末尾
@@ -121,5 +105,24 @@ public class StudyService {
         stuPackRela.setLearnedNum(stuPackRela.getLearnedNum() + 1);
         stuPackRela.setLastLearnTime(new Date());
         stuPackRelaRepo.save(stuPackRela);
+    }
+
+    @Transactional
+    public void activity(long studentId, int enableCount) {
+        List<StuPackRela> packages = stuPackRelaRepo.findByStudentId(studentId);
+        Date enableDate = new Date();
+        packages.forEach(stuPackRela -> {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar calendar = Calendar.getInstance();
+            String startDate = simpleDateFormat.format(calendar.getTime());
+            calendar.add(Calendar.DATE, 1);
+            String endDate = simpleDateFormat.format(calendar.getTime());
+            StuKnowledgeRela stuKnowledgeRela = stuKnowledgeRelaRepo.findEnableByDay(startDate, endDate);
+            if(null == stuKnowledgeRela) {
+                int currentEnableCount = stuKnowledgeRelaRepo.enableKnowledgeByStudentId(enableDate, studentId, enableCount);
+                LOGGER.info("student: {}, packId: {}, enableCount : {}, date: {}",
+                        studentId, stuPackRela.getId(), currentEnableCount, enableDate);
+            }
+        });
     }
 }
