@@ -78,7 +78,7 @@ var gradePop = Ext.create('Ext.window.Window', {
 var studentPop = Ext.create('Ext.window.Window', {
 	id: 'studentWin',
 	title: '增加',
-	height: 120,
+	height: 300,
 	width: 300,
 	bodyPadding: 5,
 	maximizable: true,
@@ -120,7 +120,7 @@ var studentPop = Ext.create('Ext.window.Window', {
 				},
 				{
 					xtype: 'combo',
-					name: 'gradeId',
+					name: 'gradeid',
 					fieldLabel: '班级',
 					store: Ext.create('Ext.data.JsonStore', {
 						storeId: 'class',
@@ -159,7 +159,7 @@ var studentPop = Ext.create('Ext.window.Window', {
 		{
 			text: '保存',
 			handler: function () {
-				Ext.getCmp('gradeid').setValue(_gradeid);
+				Ext.getCmp('gradeId').setValue(_gradeid);
 				var studentForm = Ext.getCmp('studentForm').getForm();
 				if (!studentForm.isValid()) {
 					return;
@@ -203,7 +203,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 	selModel: {
 		listeners: {
 			select: function (rowModel, record, index, eOpts) {
-				southPanel.getStore().load({params: {gradeid: record.data.id}});
+				southPanel.getStore().load({params: {gradeId: record.data.id}});
 			}
 		},
 		mode: 'MULTI'
@@ -283,7 +283,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 var southPanel = Ext.create('Ext.grid.Panel', {
 	region: 'south',
 	title: '学生列表',
-	height: 260,
+	height: 500,
 	split: true,
 	collapsible: true,
 	columns: [
@@ -299,6 +299,7 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 	],
 	store: Ext.create('Ext.data.JsonStore', {
 		storeId: 'southStore',
+		pageSize: itemsPerPage, // 每页显示条数
 		fields: ['id', 'gradeId', 'mobile', 'password', 'name', 'class', 'age', 'sex', 'email'],
 		proxy: {
 			type: 'ajax',
@@ -384,7 +385,15 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 				southPanel.clearValue();
 			}
 		}
-	]
+	],
+	bbar: Ext.create('Ext.toolbar.Paging', {
+		store: Ext.data.StoreManager.get('southStore'),
+		displayInfo: true,
+		displayMsg: '第{0}-{1}条，共{2}条',
+		emptyMsg: "没有数据",
+		beforePageText: '第',
+		afterPageText: '页，共 {0} 页'
+	})
 });
 
 //domReady

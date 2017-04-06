@@ -38,6 +38,19 @@ public class StudentController {
         return entity;
     }
 
+    @RequestMapping(value = "/gradeStudent", method = RequestMethod.GET)
+    public ExtEntity<Student> getGradeStudent(
+            @RequestParam(value = "gradeId") Long gradeId,
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit) {
+        List<Student> list = this.gradeService.getStudentList(gradeId, page, limit);
+        ExtEntity<Student> entity = new ExtEntity<>();
+        entity.setResult(gradeService.countByGradeId(gradeId));
+        entity.setRows(list);
+        LOGGER.info("getGradeList");
+        return entity;
+    }
+
     @RequestMapping(value = "/getStudent")
     public ExtEntity<Student> getStudentListByTitle(@RequestParam("sMobile") String mobile) {
         List<Student> list = this.gradeService.getStudentListByMobile(mobile);

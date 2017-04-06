@@ -9,6 +9,8 @@ import com.rapids.core.repo.StudentRepo;
 import com.rapids.core.repo.GradeRepo;
 import com.rapids.core.repo.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,10 @@ public class GradeService {
         return gradeRepo.findOne(id);
     }
 
+    public long countByGradeId(Long gradeId){
+        return studentRepo.countByGradeId(gradeId);
+    }
+
     public Student getStudentById(Long id){
         return studentRepo.findOne(id);
     }
@@ -58,6 +64,11 @@ public class GradeService {
     @Transactional
     public List<Student> getStudentListByMobile(String mobile){
         return this.studentRepo.findByMobile(mobile);
+    }
+
+    public List<Student> getStudentList(Long gradeId, Integer page, Integer limit){
+        PageRequest pageRequest = new PageRequest(page-1, limit);
+        return studentRepo.findByGradeId(gradeId, pageRequest).getContent();
     }
 
 
