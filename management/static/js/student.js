@@ -415,8 +415,7 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 			text: '查询',
 			handler: function () {
 				southPanel.getStore().load({url: path + '/grade/getStudent',
-					params: {title: Ext.getCmp('sMobile').getValue()}});
-				southPanel.clearValue();
+					params: {sMobile: Ext.getCmp('sMobile').getValue()}});
 			}
 		}
 	],
