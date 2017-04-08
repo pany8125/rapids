@@ -9,12 +9,14 @@ import com.rapids.manage.dto.ExtStatusEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,10 +31,12 @@ public class StudentController {
     private GradeService gradeService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ExtEntity<Grade> getGradeList() {
-        List<Grade> list = this.gradeService.getGradeList();
+    public ExtEntity<Grade> getGradeList(
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit) {
+        List<Grade> list = this.gradeService.getGradeList(page, limit);
         ExtEntity<Grade> entity = new ExtEntity<>();
-        entity.setResult(list.size());
+        entity.setResult(gradeService.countGrade());
         entity.setRows(list);
         LOGGER.info("getGradeList");
         return entity;
@@ -102,6 +106,11 @@ public class StudentController {
                                      @RequestParam("sex") Integer sex,
                                      @RequestParam("adminName") String adminName) {
         ExtStatusEntity result = new ExtStatusEntity();
+        if(!gradeService.checkStudentMobile(mobile)){
+            result.setMsg("手机号重复");
+            result.setSuccess(false);
+            return result;
+        }
         try {
             Student studentDTO = new Student();
             if (id == null) {
@@ -111,13 +120,16 @@ public class StudentController {
             }
             studentDTO.setGradeId(gradeId);
             studentDTO.setName(name);
-            studentDTO.setPassword(password);
+            if(password.length()!=32){
+                studentDTO.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+            }
             studentDTO.setAge(age);
             studentDTO.setEmail(email);
             studentDTO.setSex(sex);
             studentDTO.setMobile(mobile);
-            Student knowledge = this.gradeService.saveStudent(studentDTO);
-            if (null == knowledge) {
+            studentDTO.setCreateTime(new Date());
+            Student student = this.gradeService.saveStudent(studentDTO);
+            if (null == student) {
                 result.setMsg("添加或修改学生失败");
                 result.setSuccess(false);
             } else {

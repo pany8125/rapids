@@ -120,7 +120,8 @@ var studentPop = Ext.create('Ext.window.Window', {
 				},
 				{
 					xtype: 'combo',
-					name: 'gradeid',
+					name: 'gradeId',
+					id: 'gradeId',
 					fieldLabel: '班级',
 					store: Ext.create('Ext.data.JsonStore', {
 						storeId: 'class',
@@ -135,20 +136,37 @@ var studentPop = Ext.create('Ext.window.Window', {
 							}
 						}
 					}),
+					editable: false,
+					allowBlank: false,
 					displayField: 'name',
 					valueField: 'id'
 				},
 				{
+					xtype: 'numberfield',
 					fieldLabel: '年龄',
 					name: 'age',
-					allowBlank: false
+					allowBlank: false,
+					maxValue: 99,
+					minValue: 0
 				},
 				{
 					fieldLabel: '性别',
 					name: 'sex',
-					allowBlank: false
+					xtype: 'combo',
+					store: Ext.create('Ext.data.ArrayStore', {
+						fields: ['value', 'text'],
+						data: [
+							[0, '女'],
+							[1, '男']
+						]
+					}),
+					editable: false,
+					allowBlank: false,
+					displayField: 'text',
+					valueField: 'value'
 				},
 				{
+					vtype: 'email',
 					fieldLabel: '邮箱',
 					name: 'email',
 					allowBlank: false
@@ -159,12 +177,11 @@ var studentPop = Ext.create('Ext.window.Window', {
 		{
 			text: '保存',
 			handler: function () {
-				Ext.getCmp('gradeId').setValue(_gradeid);
 				var studentForm = Ext.getCmp('studentForm').getForm();
 				if (!studentForm.isValid()) {
+					Ext.Msg.alert('系统提示', '请按要求填写表格！');
 					return;
 				}
-
 				studentForm.submit({
 					waitTitle: '系统提示',
 					waitMsg: '保存中......',
@@ -211,6 +228,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 	store: Ext.create('Ext.data.JsonStore', {
 		autoLoad: true,
 		storeId: 'centerStore',
+		pageSize: 5, // 每页显示条数
 		fields: ['id', 'name', 'gradeYear', 'description'],
 		proxy: {
 			type: 'ajax',
@@ -244,8 +262,6 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 				gradePop.setTitle('编辑');
 				gradePop.show();
 				Ext.getCmp('gradeForm').loadRecord(models[0]);
-				Ext.getCmp('gradeForm').getForm().findField('uid').setReadOnly(true);
-				Ext.getCmp('gradeForm').getForm().findField('password').setValue();
 			}
 
 		},
@@ -261,7 +277,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 				Ext.Msg.confirm('系统提示', '您确认要删除吗?', function (option) {
 					if ('yes' === option) {
 						Ext.Ajax.request({
-							url: path + '/grade/delgrade?id=' + grade[0].data.id,
+							url: path + '/grade/delGrade?id=' + grade[0].data.id,
 							scope: this,
 							async: true,
 							success: function (response, options) {
@@ -277,30 +293,46 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 				});
 			}
 		}
-	]
+	],
+	bbar: Ext.create('Ext.toolbar.Paging', {
+		store: Ext.data.StoreManager.get('centerStore'),
+		displayInfo: true,
+		displayMsg: '第{0}-{1}条，共{2}条',
+		emptyMsg: "没有数据",
+		beforePageText: '第',
+		afterPageText: '页，共 {0} 页'
+	})
 });
 
 var southPanel = Ext.create('Ext.grid.Panel', {
 	region: 'south',
 	title: '学生列表',
-	height: 500,
+	height: 380,
 	split: true,
 	collapsible: true,
 	columns: [
-		{header: '班级ID', align: 'center', width: 100, dataIndex: 'gradeId'},
-		{header: '学生ID', align: 'center', width: 100, dataIndex: 'id'},
-		{header: '手机号', align: 'center', width: 200, dataIndex: 'mobile'},
-		{header: '密码', align: 'center', width: 200, dataIndex: 'password'},
-		{header: '姓名', align: 'center', width: 200, dataIndex: 'name'},
-		{header: '班级', align: 'center', width: 200, dataIndex: 'class'},
+		{header: '班级ID', align: 'center', width: 50, dataIndex: 'gradeId'},
+		{header: '学生ID', align: 'center', width: 50, dataIndex: 'id'},
+		{header: '手机号', align: 'center', width: 150, dataIndex: 'mobile'},
+		{header: '密码', align: 'center', width: 200, dataIndex: 'password', hidden: true},
+		{header: '姓名', align: 'center', width: 100, dataIndex: 'name'},
+		//{header: '班级', align: 'center', width: 200, dataIndex: 'class'},
 		{header: '年龄', align: 'center', width: 200, dataIndex: 'age'},
-		{header: '性别', align: 'center', width: 200, dataIndex: 'sex'},
+		{header: '性别', dataIndex: 'sex', width: 80, renderer: function (value) {
+			if (value == 0) {
+				return "女";
+			} else if (value == 1) {
+				return "男";
+			}  else {
+				return value;
+			}
+		}},
 		{header: '邮箱', align: 'center', width: 200, dataIndex: 'email'}
 	],
 	store: Ext.create('Ext.data.JsonStore', {
 		storeId: 'southStore',
 		pageSize: itemsPerPage, // 每页显示条数
-		fields: ['id', 'gradeId', 'mobile', 'password', 'name', 'class', 'age', 'sex', 'email'],
+		fields: ['id', 'gradeId', 'mobile', 'password', 'name', 'age', 'sex', 'email'],
 		proxy: {
 			type: 'ajax',
 			url: path + '/grade/gradeStudent',
@@ -324,13 +356,15 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 				Ext.getCmp('studentForm').getForm().reset();
 				Ext.getCmp('studentWin').setTitle('添加');
 				Ext.getCmp('studentWin').show();
+				Ext.getCmp('gradeId').setValue(_gradeid);
+				Ext.getCmp('studentForm').getForm().findField('gradeId').setReadOnly(true);
 			}
 		},
 		{
 			xtype: 'button',
 			text: '编辑学生',
 			handler: function () {
-				var models = centerPanel.getSelectionModel().getSelection();
+				var models = southPanel.getSelectionModel().getSelection();
 				if (models.length <= 0) {
 					Ext.Msg.alert('系统提示', '请选择要编辑的数据');
 					return;
@@ -338,7 +372,7 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 				studentPop.setTitle('编辑');
 				studentPop.show();
 				Ext.getCmp('studentForm').loadRecord(models[0]);
-				Ext.getCmp('studentForm').getForm().findField('name').setReadOnly(true);
+				Ext.getCmp('studentForm').getForm().findField('gradeId').setReadOnly(false);
 			}
 
 		}, {
@@ -353,7 +387,7 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 				Ext.Msg.confirm('系统提示', '您确认要删除吗?', function (option) {
 					if ('yes' === option) {
 						Ext.Ajax.request({
-							url: path + '/grade/delstudent?id=' + records[0].data.id,
+							url: path + '/grade/delStudent?id=' + records[0].data.id,
 							scope: this,
 							async: true,
 							success: function (response, options) {

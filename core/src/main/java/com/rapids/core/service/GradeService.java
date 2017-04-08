@@ -34,8 +34,16 @@ public class GradeService {
         return studentRepo.save(student);
     }
 
+    public boolean checkStudentMobile(String mobile){
+        return studentRepo.findByMobile(mobile).size()==0;
+    }
+
     public Grade getById(Long id){
         return gradeRepo.findOne(id);
+    }
+
+    public long countGrade(){
+        return gradeRepo.count();
     }
 
     public long countByGradeId(Long gradeId){
@@ -46,8 +54,9 @@ public class GradeService {
         return studentRepo.findOne(id);
     }
 
-    public List<Grade> getGradeList(){
-        return (List)gradeRepo.findAll();
+    public List<Grade> getGradeList(Integer page, Integer limit){
+        PageRequest pageRequest = new PageRequest(page-1, limit);
+        return gradeRepo.findAll(pageRequest).getContent();
     }
 
     @Transactional
