@@ -1,82 +1,6 @@
-var _gradeid;
-var gradePop = Ext.create('Ext.window.Window', {
-	id: 'gradeWin',
-	title: '增加',
-	height: 200,
-	width: 300,
-	bodyPadding: 5,
-	maximizable: true,
-	modal: true,
-	closeAction: 'hide',
-	overflowX: 'hidden',
-	overflowY: 'auto',
-	items: [
-		Ext.create('Ext.form.Panel', {
-			id: 'gradeForm',
-			url: path + '/grade/saveGrade?adminName='+adminName,
-			layout: 'anchor',
-			defaults: {
-				anchor: '80%',
-				labelAlign: 'right',
-				labelWidth: 80,
-				blankText: '必填项'
-			},
-			// The fields
-			defaultType: 'textfield',
-			items: [{//隐藏域
-				name: 'id',
-				hidden: true
-			}, {
-
-				fieldLabel: '班级名称',
-				name: 'name',
-				allowBlank: false
-			},
-				{
-					fieldLabel: '班级描述',
-					name: 'description',
-					allowBlank: false
-				},
-				{
-					fieldLabel: '班级学年',
-					name: 'gradeYear',
-					allowBlank: false
-				}]
-		})
-	],
-	buttons: [
-		{
-			text: '保存',
-			handler: function () {
-
-				if (!Ext.getCmp('gradeForm').getForm().isValid()) {
-					Ext.Msg.alert('系统提示', '请按要求填写表格！');
-					return;
-				}
-				Ext.getCmp('gradeForm').submit({
-					waitTitle: '系统提示',
-					waitMsg: '保存中......',
-					success: function (form, action) {
-						Ext.getCmp('gradeWin').hide();
-						centerPanel.getStore().reload();
-						Ext.Msg.alert('系统提示', '保存成功！');
-					},
-					failure: function (form, action) {
-						Ext.Msg.alert('系统提示', action.result.msg);
-					}
-				});
-			}
-		}, {
-			text: '取消',
-			handler: function () {
-				gradePop.hide();
-			}
-		}
-	]
-});
-
-var studentPop = Ext.create('Ext.window.Window', {
-	id: 'studentWin',
+var _studentid;
+var relaPop = Ext.create('Ext.window.Window', {
+	id: 'relaWin',
 	title: '增加',
 	height: 120,
 	width: 300,
@@ -88,8 +12,8 @@ var studentPop = Ext.create('Ext.window.Window', {
 	overflowY: 'auto',
 	items: [
 		Ext.create('Ext.form.Panel', {
-			id: 'studentForm',
-			url: path + '/grade/saveStudent?adminName='+adminName,
+			id: 'relaForm',
+			url: path + '/rela/saveStudentPack',
 			layout: 'anchor',
 			defaults: {
 				anchor: '80%',
@@ -100,79 +24,51 @@ var studentPop = Ext.create('Ext.window.Window', {
 			// The fields
 			defaultType: 'textfield',
 			items: [{
-				name: 'id',
+				name: 'studentid',
+				id: 'studentid',
 				hidden: true
-			},
-				{
-					fieldLabel: '手机号',
-					name: 'mobile',
-					allowBlank: false
-				},
-				{
-					fieldLabel: '密码',
-					name: 'password',
-					allowBlank: false
-				},
-				{
-					fieldLabel: '姓名',
-					name: 'name',
-					allowBlank: false
-				},
-				{
-					xtype: 'combo',
-					name: 'gradeId',
-					fieldLabel: '班级',
-					store: Ext.create('Ext.data.JsonStore', {
-						storeId: 'class',
-						autoLoad: true,
-						fields: ['id', 'name'],
-						proxy: {
-							type: 'ajax',
-							url: path + '/grade/list',
-							reader: {
-								totalProperty: 'results',
-								root: 'rows'
-							}
+			}, {
+				xtype: 'combo',
+				name: 'packid',
+				fieldLabel: '知识包',
+				editable: false,
+				allowBlank: false,
+				store: Ext.create('Ext.data.JsonStore', {
+					storeId: 'pack',
+					autoLoad: true,
+					fields: ['id', 'name'],
+					proxy: {
+						type: 'ajax',
+						url: path + '/pack/list',
+						reader: {
+							totalProperty: 'results',
+							root: 'rows'
 						}
-					}),
-					displayField: 'name',
-					valueField: 'id'
-				},
-				{
-					fieldLabel: '年龄',
-					name: 'age',
-					allowBlank: false
-				},
-				{
-					fieldLabel: '性别',
-					name: 'sex',
-					allowBlank: false
-				},
-				{
-					fieldLabel: '邮箱',
-					name: 'email',
-					allowBlank: false
-				}]
+					}
+				}),
+				displayField: 'name',
+				valueField: 'id'
+			}]
 		})
 	],
 	buttons: [
 		{
 			text: '保存',
 			handler: function () {
-				Ext.getCmp('gradeid').setValue(_gradeid);
-				var studentForm = Ext.getCmp('studentForm').getForm();
-				if (!studentForm.isValid()) {
+				Ext.getCmp('studentid').setValue(_studentid);
+				var relaForm = Ext.getCmp('relaForm').getForm();
+				if (!relaForm.isValid()) {
+					Ext.Msg.alert('系统提示', '请按要求填写表格！');
 					return;
 				}
-
-				studentForm.submit({
+				relaForm.submit({
 					waitTitle: '系统提示',
 					waitMsg: '保存中......',
 					success: function (form, action) {
 						if (!action.result.success) {
 							Ext.Msg.alert('系统提示', action.result.msg);
 						} else {
-							Ext.getCmp('studentWin').hide();
+							Ext.getCmp('relaWin').hide();
 							southPanel.getStore().reload();
 							Ext.Msg.alert('系统提示', '保存成功！');
 						}
@@ -185,7 +81,7 @@ var studentPop = Ext.create('Ext.window.Window', {
 		}, {
 			text: '取消',
 			handler: function () {
-				studentPop.hide();
+				relaPop.hide();
 			}
 		}
 	]
@@ -195,33 +91,32 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 	region: 'center',
 	title: '学生列表',
 	columns: [
-		{header: '班级名称', dataIndex: 'name', width: 100},
+		{header: '班级ID', dataIndex: 'gradeId', width: 100},
 		{header: '学生ID', dataIndex: 'id', width: 100, sortable: true},
-		{header: '手机号', dataIndex: 'description', width: 100},
-		{header: '姓名', dataIndex: 'gradeYear', width: 100}
+		{header: '手机号', dataIndex: 'mobile', width: 100},
+		{header: '姓名', dataIndex: 'name', width: 100}
 	],
-	selModel: {
-		listeners: {
-			select: function (rowModel, record, index, eOpts) {
-				southPanel.getStore().load({params: {gradeid: record.data.id}});
-			}
-		},
-		mode: 'MULTI'
-	},
 	store: Ext.create('Ext.data.JsonStore', {
-		autoLoad: true,
 		storeId: 'centerStore',
-		fields: ['id', 'name', 'gradeYear', 'description'],
+		fields: ['gradeId', 'id', 'name', 'mobile'],
 		proxy: {
 			type: 'ajax',
-			url: path + '/grade/list',
+			//url: path + '/rela/stuPackRela',
 			reader: {
-				type: 'json',
-				totalProperty: "result",
+				totalProperty: 'results',
 				root: 'rows'
 			}
 		}
 	}),
+	selModel: {
+		listeners: {
+			select: function (rowModel, record, index, eOpts) {
+				southPanel.getStore().load({params: {studentid: record.data.id}});
+				eastPanel.getStore().load({params: {studentid: record.data.id}});
+			}
+		},
+		mode: 'MULTI'
+	},
 	tbar: [
 		{
 			xtype: 'textfield',
@@ -233,9 +128,8 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 			xtype: 'button',
 			text: '查询',
 			handler: function () {
-				southPanel.getStore().load({url: path + '/grade/getStudent',
-					params: {title: Ext.getCmp('sMobile').getValue()}});
-				southPanel.clearValue();
+				centerPanel.getStore().load({url: path + '/rela/getStudent',
+					params: {sMobile: Ext.getCmp('sMobile').getValue()}});
 			}
 		}
 	]
@@ -243,27 +137,27 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 
 var southPanel = Ext.create('Ext.grid.Panel', {
 	region: 'south',
-	title: '学生列表',
-	height: 260,
+	title: '知识包列表',
+	height: 400,
 	split: true,
 	collapsible: true,
 	columns: [
-		{header: '班级ID', align: 'center', width: 100, dataIndex: 'gradeId'},
-		{header: '学生ID', align: 'center', width: 100, dataIndex: 'id'},
-		{header: '手机号', align: 'center', width: 200, dataIndex: 'mobile'},
-		{header: '密码', align: 'center', width: 200, dataIndex: 'password'},
-		{header: '姓名', align: 'center', width: 200, dataIndex: 'name'},
-		{header: '班级', align: 'center', width: 200, dataIndex: 'class'},
-		{header: '年龄', align: 'center', width: 200, dataIndex: 'age'},
-		{header: '性别', align: 'center', width: 200, dataIndex: 'sex'},
-		{header: '邮箱', align: 'center', width: 200, dataIndex: 'email'}
+		{header: '学生ID', align: 'center', width: 100, dataIndex: 'studentId'},
+		{header: '知识包ID', align: 'center', width: 100, dataIndex: 'packId'},
+		{header: '知识包名称', align: 'center', width: 100, dataIndex: 'packName'},
+		{header: '知识点总个数', align: 'center', width: 200, dataIndex: 'knowledgeNum'},
+		{header: '已掌握知识点总个数', align: 'center', width: 200, dataIndex: 'learnedNum'},
+		{header: '最后一次学习时间', align: 'center', width: 200, dataIndex: 'lastLearnTime', renderer: function (value) {
+			var now = new Date(parseInt(value));
+			return now.toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+		}}
 	],
 	store: Ext.create('Ext.data.JsonStore', {
 		storeId: 'southStore',
-		fields: ['id', 'gradeId', 'mobile', 'password', 'name', 'class', 'age', 'sex', 'email'],
+		fields: ['studentId', 'packId', 'packName', 'knowledgeNum', 'learnedNum', 'lastLearnTime'],
 		proxy: {
 			type: 'ajax',
-			url: path + '/grade/gradeStudent',
+			url: path + '/rela/stuPackRela',
 			reader: {
 				totalProperty: 'results',
 				root: 'rows'
@@ -273,76 +167,48 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 	tbar: [
 		{	//计划列表表头添加按钮
 			xtype: 'button',
-			text: '增加学生',
+			text: '增加知识包',
 			handler: function () {
 				var records = centerPanel.getSelectionModel().getSelection();
 				if (records.length == 0) {
-					Ext.Msg.alert('系统提示', '请选择班级');
+					Ext.Msg.alert('系统提示', '请选择学生');
 					return;
 				}
 				_gradeid = records[0].data.id;
-				Ext.getCmp('studentForm').getForm().reset();
-				Ext.getCmp('studentWin').setTitle('添加');
-				Ext.getCmp('studentWin').show();
+				Ext.getCmp('relaForm').getForm().reset();
+				Ext.getCmp('relaWin').setTitle('添加');
+				Ext.getCmp('relaWin').show();
 			}
 		},
 		{
 			xtype: 'button',
-			text: '编辑学生',
-			handler: function () {
-				var models = centerPanel.getSelectionModel().getSelection();
-				if (models.length <= 0) {
-					Ext.Msg.alert('系统提示', '请选择要编辑的数据');
-					return;
-				}
-				studentPop.setTitle('编辑');
-				studentPop.show();
-				Ext.getCmp('studentForm').loadRecord(models[0]);
-				Ext.getCmp('studentForm').getForm().findField('name').setReadOnly(true);
-			}
-
-		}, {
-			xtype: 'button',
-			text: '删除学生',
+			text: '删除关联知识包',
 			handler: function () {
 				var records = southPanel.getSelectionModel().getSelection();
 				if (records.length == 0) {
-					Ext.Msg.alert('系统提示', '请选择要删除的知识点。');
+					Ext.Msg.alert('系统提示', '请选择要删除的知识包。');
 					return;
 				}
 				Ext.Msg.confirm('系统提示', '您确认要删除吗?', function (option) {
-					if ('yes' === option) {
-						Ext.Ajax.request({
-							url: path + '/grade/delstudent?id=' + records[0].data.id,
-							scope: this,
-							async: true,
-							success: function (response, options) {
-								Ext.Msg.alert("系统提示", "删除成功");
-								centerPanel.getStore().reload();
-								southPanel.getStore().reload();
-							},
-							failure: function (form, action) {
-								Ext.Msg.alert('系统提示', action.result.msg);
+					Ext.Msg.confirm('系统提示', '删除之后无法恢复,您真的确认要删除吗?', function (option) {
+						Ext.Msg.confirm('系统提示', '删除之后学生对于该学习包需要从头开始学习,您真的确认一定要删除吗?', function (option) {
+							if ('yes' === option) {
+								Ext.Ajax.request({
+									url: path + '/rele/delRela?studentId=' + records[0].data.studentId + '&packId=' +records[0].data.packId,
+									scope: this,
+									async: true,
+									success: function (response, options) {
+										Ext.Msg.alert("系统提示", "删除成功");
+										southPanel.getStore().reload();
+									},
+									failure: function (form, action) {
+										Ext.Msg.alert('系统提示', action.result.msg);
+									}
+								});
 							}
 						});
-					}
+					});
 				});
-			}
-		},
-		'-',
-		{
-			xtype: 'textfield',
-			fieldLabel: '手机号',
-			name: 'sMobile',
-			id: 'sMobile'
-		},
-		{
-			xtype: 'button',
-			text: '查询',
-			handler: function () {
-				southPanel.getStore().load({url: path + '/grade/getStudent',
-					params: {title: Ext.getCmp('sMobile').getValue()}});
-				southPanel.clearValue();
 			}
 		}
 	]
@@ -351,21 +217,29 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 
 var eastPanel = Ext.create('Ext.grid.Panel', {
 	region: 'east',
-	title: '知识点列表',
-	height: 260,
+	title: '个人知识点列表',
+	width: 350,
 	split: true,
 	collapsible: true,
 	columns: [
-		{header: '知识点ID', align: 'center', width: 100, dataIndex: 'id'},
-		{header: '知识点标题', align: 'center', width: 100, dataIndex: 'title'},
-		{header: '是否学习完成', align: 'center', width: 200, dataIndex: 'isComplete'}
+		{header: '知识点ID', align: 'center', width: 100, dataIndex: 'knowledgeId'},
+		{header: '知识点标题', align: 'center', width: 100, dataIndex: 'name'},
+		{header: '是否学习完成', align: 'center', width: 200, dataIndex: 'deleted', renderer: function (value) {
+			if (value == false) {
+				return "未完成";
+			} else if (value == true) {
+				return "已完成";
+			}  else {
+				return value;
+			}
+		}}
 	],
 	store: Ext.create('Ext.data.JsonStore', {
 		storeId: 'eastStore',
-		fields: ['id', 'title', 'isComplete'],
+		fields: ['knowledgeId', 'name', 'deleted'],
 		proxy: {
 			type: 'ajax',
-			url: path + '/grade/gradeStudent',
+			url: path + '/rela/stuKnowRela',
 			reader: {
 				totalProperty: 'results',
 				root: 'rows'
@@ -378,6 +252,6 @@ var eastPanel = Ext.create('Ext.grid.Panel', {
 Ext.onReady(function () {
 	Ext.create('Ext.container.Viewport', {
 		layout: 'border',
-		items: [centerPanel, southPanel]
+		items: [centerPanel, southPanel, eastPanel ]
 	});
 });

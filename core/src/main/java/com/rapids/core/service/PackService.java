@@ -55,6 +55,11 @@ public class PackService {
         return this.knowledgeRepo.queryKnowledgeByTitle(title);
     }
 
+    @Transactional
+    public List<Knowledge> getKnowledgeListByPack(long packId){
+        return this.knowledgeRepo.findByPackId(packId);
+    }
+
 
     //    public Admin checkAdmin(String uid, String password){
 //        return adminRepo.queryByUidAndPassword(uid, password);

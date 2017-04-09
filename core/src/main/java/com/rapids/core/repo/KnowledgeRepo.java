@@ -16,4 +16,6 @@ public interface KnowledgeRepo extends PagingAndSortingRepository<Knowledge, Lon
     @Query(value = "SELECT * FROM Knowledge " +
             "WHERE title = ?1", nativeQuery = true)
     List<Knowledge> queryKnowledgeByTitle(String title);
+
+    List<Knowledge> findByPackId(long packId);
 }
