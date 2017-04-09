@@ -16,20 +16,20 @@ public interface StuKnowledgeRelaRepo extends PagingAndSortingRepository<StuKnow
 
 
     @Query(value = "SELECT * FROM StuKnowledgeRela " +
-            "WHERE studentId = ?1 AND leanSeq < ?2 " +
+            "WHERE studentId = ?1 " +
+            "AND leanSeq < ?2 " +
             "AND deleted = 0 " +
-            "AND enabled = 1 " +
-            "AND leanSeq <> 0 " +
+            "AND reviewed = 1 " +
             "ORDER BY leanSeq LIMIT 1", nativeQuery = true)
-    StuKnowledgeRela findRequireByTime(Long studentId, long timestamp);
+    StuKnowledgeRela findNextByTime(Long studentId, long timestamp);
 
     @Query(value = "SELECT * FROM StuKnowledgeRela " +
             "WHERE studentId = ?1 " +
             "AND deleted = 0 " +
             "AND enabled = 1 " +
-            "AND viewCount = 0 " +
-            "ORDER BY studentId, knowledgeId, createTime LIMIT 1", nativeQuery = true)
-    StuKnowledgeRela findRequire(Long studentId);
+            "AND reviewed = 0 " +
+            "ORDER BY createTime LIMIT 1", nativeQuery = true)
+    StuKnowledgeRela findNext(Long studentId);
 
     @Query(value = "SELECT * FROM StuKnowledgeRela " +
             "WHERE enableTime > ?1 AND enableTime < ?2 LIMIT 1", nativeQuery = true)

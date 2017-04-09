@@ -23,6 +23,9 @@ public class StuPackRela {
     private String packName;
     private Integer knowledgeNum;
     private Integer learnedNum;
+    /**
+     * 最后一次记住知识点的时间,即将知识点标记为"完成记忆",无需再复习的时间
+     */
     private Date lastLearnTime;
     private Date createTime;
     private Status status;

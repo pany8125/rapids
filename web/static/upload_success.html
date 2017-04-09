@@ -94,20 +94,52 @@
     </nav>
     <!-- Team Section -->
     <div>
-        <div class="container text-center wow fadeIn" style="margin-top: 150px;">
+        <div class="container text-center wow fadeIn" style="margin-top: 100px;">
             <div class="row">
-                <div class="col-lg-12">
-                    <h2>
-                        <i class="fa fa-check" aria-hidden="true" style="color: green;"></i>
-                    </h2>
-                    <hr class="colored">
-                    <p>恭喜你！已学完所有知识点！</p>
-                    <p>
-                        <a class="btn" href="packages.html">返回我的知识包列表</a>
-                    </p>
+                <div class="col-lg-12" style="text-align: left;">
+                    <form role="form" action="my/knowledge" method="post" enctype="multipart/form-data" onsubmit="return validate();">
+                        <div class="form-group">
+                            <label for="title">知识点名称</label>
+                            <input type="text" class="form-control" id="title" name="title"
+                                   placeholder="请输入知识点名称">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">知识点描述</label>
+                            <p>
+                            <textarea class="form-control" id="description" name="description" style="width: 100%;height: 100px;" placeholder="请输入知识点描述"></textarea>
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <label for="descPic">知识点图片上传</label>
+                            <input type="file" id="descPic" name="descPic">
+                        </div>
+                        <div class="form-group">
+                            <label for="memo">妙记描述</label>
+                            <p>
+                            <textarea class="form-control" name="memo" id="memo" style="width: 100%;height: 100px;" placeholder="请输入妙记描述"></textarea>
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <label for="memoPic">妙记图片上传</label>
+                            <input type="file" id="memoPic" name="memoPic">
+                        </div>
+                        <button type="submit" class="btn">提交</button>
+                    </form>
                 </div>
             </div>
         </div>  
+    </div>
+    <div class="pop alert alert-success hide fade in">
+        <a href="#" class="close">&times;</a>
+        <strong>成功！</strong><span></span>
+    </div>
+    <div class="pop alert alert-warning hide fade in">
+        <a href="#" class="close">&times;</a>
+        <strong>警告！</strong><span></span>
+    </div>
+    <div class="pop alert alert-danger hide fade in">
+        <a href="#" class="close">&times;</a>
+        <strong>错误！</strong><span></span>
     </div>
     
 
@@ -135,27 +167,11 @@
     <script src="js/vitality.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            var knowledge = $(".knowledge"),
-                kwidth = knowledge.width(),
-                width = $(window).width(),
-                knowBody = $(".knowledge-body");
-            knowledge.css({
-                left : width/2 - kwidth/2
-            }).animate({
-                top: $(window).height() / 2 - 20
-            }, 1250, 'easeInOutExpo');
-
-            $("#check").bind("click", function() {
-                knowledge.animate({
-                    top: 150
-                }, 1250, 'easeInOutExpo', function() {
-                    setTimeout(function() {
-                        knowledge.hide();
-                    },1000)
-                    knowBody.removeClass("hide");
-                });
-
-            })
+            if(window.confirm("知识点上传成功!是否继续添加?")) {
+                window.location.href = "upload.html";
+            }else {
+                window.location.href = "package.html";
+            }
         });
     </script>
 
