@@ -90,8 +90,8 @@ var packPop = Ext.create('Ext.window.Window', {
 var knowledgePop = Ext.create('Ext.window.Window', {
 	id: 'knowledgeWin',
 	title: '增加',
-	height: 120,
-	width: 300,
+	height: 500,
+	width: 400,
 	bodyPadding: 5,
 	maximizable: true,
 	modal: true,
@@ -116,8 +116,9 @@ var knowledgePop = Ext.create('Ext.window.Window', {
 				hidden: true
 			},{
 				fieldLabel: '知识包id',
-				name: 'packid',
-				readonly: true
+				name: 'packIdF',
+				readonly: true,
+				hidden: true
 			},
 				{
 					fieldLabel: '知识点名称',
@@ -135,7 +136,7 @@ var knowledgePop = Ext.create('Ext.window.Window', {
 					allowBlank: false
 				},
 				{
-					fieldLabel: '内容图片地址',
+					fieldLabel: '内容图片地址',//TODO:图片upload
 					name: 'descPic',
 					allowBlank: false
 				},
@@ -155,7 +156,6 @@ var knowledgePop = Ext.create('Ext.window.Window', {
 		{
 			text: '保存',
 			handler: function () {
-				Ext.getCmp('packid').setValue(_packid);
 				var knowledgeForm = Ext.getCmp('knowledgeForm').getForm();
 				if (!knowledgeForm.isValid()) {
 					return;
@@ -196,7 +196,10 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 		{header: '知识包类型', dataIndex: 'type', width: 200},
 		{header: '知识包描述', dataIndex: 'description', width: 100},
 		{header: '知识包添加人', dataIndex: 'createBy', width: 100},
-		{header: '知识包添加时间', dataIndex: 'createTime', width: 200}
+		{header: '知识包添加时间', dataIndex: 'createTime', width: 200, renderer: function (value) {
+			var now = new Date(parseInt(value));
+			return now.toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+		}}
 	],
 	selModel: {
 		listeners: {
@@ -209,6 +212,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 	store: Ext.create('Ext.data.JsonStore', {
 		autoLoad: true,
 		storeId: 'centerStore',
+		pageSize: 5, // 每页显示条数
 		fields: ['id', 'name', 'type', 'description', 'createBy', 'createTime'],
 		proxy: {
 			type: 'ajax',
@@ -234,7 +238,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 			xtype: 'button',
 			text: '修改知识包',
 			handler: function () {
-				var models = centerPanel.getSelectionModel().getSelection();
+				var models = southPanel.getSelectionModel().getSelection();
 				if (models.length <= 0) {
 					Ext.Msg.alert('系统提示', '请选择要编辑的数据');
 					return;
@@ -242,8 +246,6 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 				packPop.setTitle('编辑');
 				packPop.show();
 				Ext.getCmp('packForm').loadRecord(models[0]);
-				Ext.getCmp('packForm').getForm().findField('uid').setReadOnly(true);
-				Ext.getCmp('packForm').getForm().findField('password').setValue();
 			}
 
 		},
@@ -275,13 +277,21 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 				});
 			}
 		}
-	]
+	],
+	bbar: Ext.create('Ext.toolbar.Paging', {
+		store: Ext.data.StoreManager.get('centerStore'),
+		displayInfo: true,
+		displayMsg: '第{0}-{1}条，共{2}条',
+		emptyMsg: "没有数据",
+		beforePageText: '第',
+		afterPageText: '页，共 {0} 页'
+	})
 });
 
 var southPanel = Ext.create('Ext.grid.Panel', {
 	region: 'south',
 	title: '知识点列表',
-	height: 260,
+	height: 370,
 	split: true,
 	collapsible: true,
 	columns: [
@@ -297,10 +307,12 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 	store: Ext.create('Ext.data.JsonStore', {
 		storeId: 'southStore',
 		fields: ['id', 'packId', 'name', 'title', 'description', 'descPic', 'memo', 'memoPic'],
+		pageSize: 6, // 每页显示条数
 		proxy: {
 			type: 'ajax',
 			url: path + '/pack/packKnowledge',
 			reader: {
+				type: 'json',
 				totalProperty: 'results',
 				root: 'rows'
 			}
@@ -320,13 +332,14 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 				Ext.getCmp('knowledgeForm').getForm().reset();
 				Ext.getCmp('knowledgeWin').setTitle('添加');
 				Ext.getCmp('knowledgeWin').show();
+				Ext.getCmp('knowledgeForm').getForm().findField('packIdF').setValue(_packid);
 			}
 		},
 		{
 			xtype: 'button',
 			text: '修改知识点',
 			handler: function () {
-				var models = centerPanel.getSelectionModel().getSelection();
+				var models = southPanel.getSelectionModel().getSelection();
 				if (models.length <= 0) {
 					Ext.Msg.alert('系统提示', '请选择要编辑的数据');
 					return;
@@ -334,7 +347,6 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 				knowledgePop.setTitle('编辑');
 				knowledgePop.show();
 				Ext.getCmp('knowledgeForm').loadRecord(models[0]);
-				Ext.getCmp('knowledgeForm').getForm().findField('name').setReadOnly(true);
 			}
 
 		}, {
@@ -381,7 +393,15 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 				southPanel.clearValue();
 			}
 		}
-	]
+	],
+	bbar: Ext.create('Ext.toolbar.Paging', { //TODO:为撒分页不好使
+		store: Ext.data.StoreManager.get('southStore'),
+		displayInfo: true,
+		displayMsg: '第{0}-{1}条，共{2}条',
+		emptyMsg: "没有数据",
+		beforePageText: '第',
+		afterPageText: '页，共 {0} 页'
+	})
 });
 
 //domReady

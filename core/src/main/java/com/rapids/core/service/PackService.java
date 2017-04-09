@@ -3,6 +3,7 @@ package com.rapids.core.service;
 import com.rapids.core.domain.*;
 import com.rapids.core.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,14 @@ public class PackService {
         return packRepo.save(pack);
     }
 
+    public long countByPackId(Long packId){
+        return knowledgeRepo.countByPackId(packId);
+    }
+
+    public long countPack(){
+        return packRepo.count();
+    }
+
     public Knowledge saveKnowledge(Knowledge knowledge){
         return knowledgeRepo.save(knowledge);
     }
@@ -38,6 +47,17 @@ public class PackService {
     public List<Pack> getPackList(){
         return (List)packRepo.findAll();
     }
+
+    public List<Pack> getPackList(Integer page, Integer limit){
+        PageRequest pageRequest = new PageRequest(page-1, limit);
+        return packRepo.findAll(pageRequest).getContent();
+    }
+
+    public List<Knowledge> getKnowledgeList(Long packId, Integer page, Integer limit){
+        PageRequest pageRequest = new PageRequest(page-1, limit);
+        return knowledgeRepo.findByPackId(packId, pageRequest).getContent();
+    }
+
 
     @Transactional
     public void delPack(Long id){
@@ -61,40 +81,4 @@ public class PackService {
     }
 
 
-    //    public Admin checkAdmin(String uid, String password){
-//        return adminRepo.queryByUidAndPassword(uid, password);
-//    }
-//
-//    public List<Menu> getMenuListByAdminid(int adminId, int parent){
-//        return menuRepo.getMenuListByAdminid(adminId, parent);
-//    }
-//
-
-//
-//    public List<AdminRole> getAdminRoleList(int adminId){
-//        return adminRoleRepo.getAdminRoleList(adminId);
-//    }
-//
-//
-//    public List<AdminRole> getActiveRoleList(){
-//        return adminRoleRepo.findByStatus("ACTIVE");
-//    }
-//
-//
-//    public AdminRoleMember saveAdminRoleMember(AdminRoleMember adminRoleMember){
-//        return adminRoleMemberRepo.save(adminRoleMember);
-//    }
-//
-//    @Transactional
-//    public void delAdminRole(int id){
-//        this.adminRoleMemberRepo.delete((long) id);
-//    }
-//
-//    @Transactional
-//    public void delAdmin(int id){
-//        this.adminRoleMemberRepo.deleteByAdminId(id);
-//        Admin admin = new Admin();
-//        admin.setId(id);
-//        this.adminRepo.delete(admin);
-//    }
 }

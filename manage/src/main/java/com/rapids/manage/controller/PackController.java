@@ -28,12 +28,27 @@ public class PackController {
     private PackService packService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ExtEntity<Pack> getPackList() {
-        List<Pack> list = this.packService.getPackList();
+    public ExtEntity<Pack> getPackList(
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit) {
+        List<Pack> list = this.packService.getPackList(page, limit);
         ExtEntity<Pack> entity = new ExtEntity<>();
-        entity.setResult(list.size());
+        entity.setResult(packService.countPack());
         entity.setRows(list);
         LOGGER.info("getPackList");
+        return entity;
+    }
+
+    @RequestMapping(value = "/packKnowledge", method = RequestMethod.GET)
+    public ExtEntity<Knowledge> getPackKnowledge(
+            @RequestParam(value = "packid") Long packId,
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit) {
+        List<Knowledge> list = this.packService.getKnowledgeList(packId, page, limit);
+        ExtEntity<Knowledge> entity = new ExtEntity<>();
+        entity.setResult(packService.countByPackId(packId));
+        entity.setRows(list);
+        LOGGER.info("getKnowledgeList");
         return entity;
     }
 
@@ -85,7 +100,7 @@ public class PackController {
 
     @RequestMapping(value = "/saveKnowledge", method = RequestMethod.POST)
     public ExtStatusEntity saveKnowledge(@RequestParam(value = "id", required = false) Long id,
-                                     @RequestParam("packId") Long packId,
+                                     @RequestParam("packIdF") Long packId,
                                      @RequestParam("name") String name,
                                      @RequestParam("title") String title,
                                      @RequestParam("description") String description,

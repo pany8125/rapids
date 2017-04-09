@@ -223,7 +223,7 @@ var eastPanel = Ext.create('Ext.grid.Panel', {
 	collapsible: true,
 	columns: [
 		{header: '知识点ID', align: 'center', width: 100, dataIndex: 'knowledgeId'},
-		{header: '知识点标题', align: 'center', width: 100, dataIndex: 'name'},
+		{header: '知识点标题', align: 'center', width: 100, dataIndex: 'name'}, //TODO:关联查询咋搞
 		{header: '是否学习完成', align: 'center', width: 200, dataIndex: 'deleted', renderer: function (value) {
 			if (value == false) {
 				return "未完成";
