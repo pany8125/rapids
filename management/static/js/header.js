@@ -52,7 +52,7 @@ var path = "/rapids-management", adminID = decode64(Ext.util.Cookies
 		.get("adminId")), adminName = decode64(Ext.util.Cookies
 		.get("adminName"));
 var task = new Ext.util.DelayedTask(function() {
-	location.href = '/management/login.html';
+	location.href = '/login.html';
 });
 
 Ext.onReady(function() {

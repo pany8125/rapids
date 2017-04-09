@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -64,6 +65,7 @@ public class PackController {
             packDTO.setName(name);
             packDTO.setType(Pack.Type.MATH);
             packDTO.setDescription(description);
+            packDTO.setCreateTime(new Date());
             Pack pack = this.packService.save(packDTO);
             if (null == pack) {
                 result.setMsg("添加或修改账号失败");

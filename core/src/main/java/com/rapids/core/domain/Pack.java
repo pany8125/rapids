@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * @author David on 17/2/22.
@@ -25,7 +26,7 @@ public class Pack {
     private String description;
 
 
-    private String createTime;
+    private Date createTime;
     private String createBy;
 
     @SuppressWarnings({"unused", "WeakerAccess"})
