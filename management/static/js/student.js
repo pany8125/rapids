@@ -168,8 +168,7 @@ var studentPop = Ext.create('Ext.window.Window', {
 				{
 					vtype: 'email',
 					fieldLabel: '邮箱',
-					name: 'email',
-					allowBlank: false
+					name: 'email'
 				}]
 		})
 	],
