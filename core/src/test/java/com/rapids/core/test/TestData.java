@@ -3,13 +3,11 @@ package com.rapids.core.test;
 import com.rapids.core.CoreConfig;
 import com.rapids.core.domain.*;
 import com.rapids.core.repo.*;
-import com.rapids.core.service.StudyService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -25,19 +23,32 @@ import java.util.UUID;
  * @author David on 17/2/23.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = InitTestData.class)
+@SpringBootTest(classes = TestData.class)
 @EnableAutoConfiguration
 @Import(CoreConfig.class)
-public class InitTestData {
+public class TestData {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(InitTestData.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(TestData.class);
 
     private @Autowired PackRepo packRepo;
     private @Autowired StudentRepo studentRepo;
     private @Autowired StuKnowledgeRelaRepo stuKnowledgeRelaRepo;
     private @Autowired StuPackRelaRepo stuPackRelaRepo;
     private @Autowired KnowledgeRepo knowledgeRepo;
-    private @Autowired StudyService studyService;
+
+    @Test
+    public void restoreDate() {
+        clearTestData();
+        initTestData();
+    }
+
+    @Test
+    public void clearTestData() {
+        packRepo.deleteAll();
+        stuKnowledgeRelaRepo.deleteAll();
+        stuPackRelaRepo.deleteAll();
+        knowledgeRepo.deleteAll();
+    }
 
     @Test
     public void initTestData() {
@@ -72,6 +83,7 @@ public class InitTestData {
             stuKnowledgeRela.setStudentId(student.getId());
             stuKnowledgeRela.setCreateTime(new Date());
             stuKnowledgeRela.setPackId(pack.getId());
+            stuKnowledgeRela.setEnabled(true);
             stuKnowledgeRelaRepo.save(stuKnowledgeRela);
             LOGGER.debug("knows student rela created! {}", stuKnowledgeRela);
         });
@@ -110,14 +122,17 @@ public class InitTestData {
 
 
     private Student createStu() {
-        Student student = new Student();
-        student.setName("David");
-        student.setCreateTime(new Date());
-        student.setLastUpdateTime(new Date());
-        student.setEditor("TESTER");
-        student.setPassword("aaa");
-        studentRepo.save(student);
-        LOGGER.debug("student created! {}", student);
+        Student student = studentRepo.findOne(1L);
+        if(null == student) {
+            student = new Student();
+            student.setName("David");
+            student.setCreateTime(new Date());
+            student.setLastUpdateTime(new Date());
+            student.setEditor("TESTER");
+            student.setPassword("aaa");
+            studentRepo.save(student);
+            LOGGER.debug("student created! {}", student);
+        }
         return student;
     }
 }

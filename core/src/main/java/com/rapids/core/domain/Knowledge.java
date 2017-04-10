@@ -17,6 +17,7 @@ public class Knowledge {
     @Column(unique = true)
     private String name;
     private Long packId;
+    @Column(unique = true)
     private String title;
     private String description;
     private String descPic;

@@ -94,40 +94,52 @@
     </nav>
     <!-- Team Section -->
     <div>
-        <div class="container text-center wow fadeIn" style="margin-top: 50px;">
+        <div class="container text-center wow fadeIn" style="margin-top: 100px;">
             <div class="row">
                 <div class="col-lg-12" style="text-align: left;">
-                    <form role="form">
+                    <form role="form" action="my/knowledge" method="post" enctype="multipart/form-data" onsubmit="return validate();">
                         <div class="form-group">
-                            <label for="name">知识点名称</label>
-                            <input type="text" class="form-control" id="name" 
+                            <label for="title">知识点名称</label>
+                            <input type="text" class="form-control" id="title" name="title"
                                    placeholder="请输入知识点名称">
                         </div>
                         <div class="form-group">
-                            <label for="inputfile">知识点描述</label>
+                            <label for="description">知识点描述</label>
                             <p>
-                            <textarea class="form-control" style="width: 100%;height: 100px;" placeholder="请输入知识点描述"></textarea>
+                            <textarea class="form-control" id="description" name="description" style="width: 100%;height: 100px;" placeholder="请输入知识点描述"></textarea>
                             </p>
                         </div>
                         <div class="form-group">
-                            <label for="inputfile">知识点图片上传</label>
-                            <input type="file" id="inputfile">
+                            <label for="descPic">知识点图片上传</label>
+                            <input type="file" id="descPic" name="descPic">
                         </div>
                         <div class="form-group">
-                            <label for="inputfile">妙记描述</label>
+                            <label for="memo">妙记描述</label>
                             <p>
-                            <textarea class="form-control" style="width: 100%;height: 100px;" placeholder="请输入妙记描述"></textarea>
+                            <textarea class="form-control" name="memo" id="memo" style="width: 100%;height: 100px;" placeholder="请输入妙记描述"></textarea>
                             </p>
                         </div>
                         <div class="form-group">
-                            <label for="inputfile">妙记图片上传</label>
-                            <input type="file" id="inputfile">
+                            <label for="memoPic">妙记图片上传</label>
+                            <input type="file" id="memoPic" name="memoPic">
                         </div>
                         <button type="submit" class="btn">提交</button>
                     </form>
                 </div>
             </div>
         </div>  
+    </div>
+    <div class="pop alert alert-success hide fade in">
+        <a href="#" class="close">&times;</a>
+        <strong>成功！</strong><span></span>
+    </div>
+    <div class="pop alert alert-warning hide fade in">
+        <a href="#" class="close">&times;</a>
+        <strong>警告！</strong><span></span>
+    </div>
+    <div class="pop alert alert-danger hide fade in">
+        <a href="#" class="close">&times;</a>
+        <strong>错误！</strong><span></span>
     </div>
     
 
@@ -154,28 +166,34 @@
     <!-- Vitality Theme Scripts -->
     <script src="js/vitality.js"></script>
     <script type="text/javascript">
+        function validate() {
+            var title = $("#title"),
+                    desc = $("#description"),
+                    memo = $("#memo");
+            if(title.val() == '') {
+                Err("请填写知识点名称");
+                return false;
+            }
+            if(title.val().length > 50) {
+                Err("知识点名称不能大于50个字");
+                return false;
+            }
+            if(desc.val() == '') {
+                Err("请填写知识点描述");
+                return false;
+            }
+            if(desc.val().length > 200) {
+                Err("知识点描述不能大于200个字");
+                return false;
+            }
+            if(memo.val().length > 200) {
+                Err("妙记描述不能大于200个字");
+                return false;
+            }
+            return true;
+        }
         $(document).ready(function() {
-            var knowledge = $(".knowledge"),
-                kwidth = knowledge.width(),
-                width = $(window).width(),
-                knowBody = $(".knowledge-body");
-            knowledge.css({
-                left : width/2 - kwidth/2
-            }).animate({
-                top: $(window).height() / 2 - 20
-            }, 1250, 'easeInOutExpo');
-
-            $("#check").bind("click", function() {
-                knowledge.animate({
-                    top: 150
-                }, 1250, 'easeInOutExpo', function() {
-                    setTimeout(function() {
-                        knowledge.hide();
-                    },1000)
-                    knowBody.removeClass("hide");
-                });
-
-            })
+            $("form").prop("action", restPath + "/my/knowledge")
         });
     </script>
 

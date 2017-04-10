@@ -1,9 +1,6 @@
 package com.rapids.web.controller;
 
-import com.rapids.core.domain.Knowledge;
-import com.rapids.core.domain.StuKnowledgeRela;
-import com.rapids.core.domain.StuPackRela;
-import com.rapids.core.domain.Student;
+import com.rapids.core.domain.*;
 import com.rapids.core.repo.KnowledgeRepo;
 import com.rapids.core.repo.StuKnowledgeRelaRepo;
 import com.rapids.core.repo.StuPackRelaRepo;
@@ -16,12 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+
 import java.util.List;
 
 
@@ -30,6 +24,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/study")
+@ConfigurationProperties("rapids.study")
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class StudyController extends LoginedController{
 
@@ -63,10 +58,9 @@ public class StudyController extends LoginedController{
     @ResponseStatus(HttpStatus.OK)
     public Knowledge next() {
         Student student = currentStudent();
-
-        StuKnowledgeRela stuKnowledgeRela = stuKnowledgeRelaRepo.findRequireByTime(student.getId(), System.currentTimeMillis());
+        StuKnowledgeRela stuKnowledgeRela = stuKnowledgeRelaRepo.findNextByTime(student.getId(), System.currentTimeMillis());
         if(null == stuKnowledgeRela) {
-            stuKnowledgeRela = stuKnowledgeRelaRepo.findRequire(student.getId());
+            stuKnowledgeRela = stuKnowledgeRelaRepo.findNext(student.getId());
         }
         if(null == stuKnowledgeRela) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
@@ -86,7 +80,8 @@ public class StudyController extends LoginedController{
         if(null == knowledge) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
         }
-        StuKnowledgeRela stuKnowledgeRela = stuKnowledgeRelaRepo.findByStudentIdAndKnowledgeId(currentStudent().getId(), knowledge.getId());
+        StuKnowledgeRela stuKnowledgeRela = stuKnowledgeRelaRepo.findByStudentIdAndKnowledgeId(currentStudent().getId(),
+                knowledge.getId());
         if(null == stuKnowledgeRela) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
         }
@@ -97,18 +92,27 @@ public class StudyController extends LoginedController{
 
     private void goStudyWorkFlow(Knowledge knowledge, StuKnowledgeRela stuKnowledgeRela,
                                  ReviewRequest reviewRequest) {
+        LOGGER.info("start to complicate logic... , know id : {}, stuRela: {}, request: {}",
+                knowledge.getId(), stuKnowledgeRela.getId(), reviewRequest);
         switch (reviewRequest.firstTime) {
             case REMEMBER: {
                 switch (reviewRequest.secondTime) {
                     case REMEMBER: {
+                        LOGGER.debug("两次点击REMEMBER的次数间隔{}秒", reviewRequest.getInterval());
                         if (reviewRequest.getInterval() < intervalLimit) {
+                            LOGGER.debug("知识点在知识包中第{}次被复习到", stuKnowledgeRela.getReviewCount() + 1);
                             if (stuKnowledgeRela.getReviewCount() == 0) {
-                                studyService.deleteKnowledgeRela(stuKnowledgeRela);
+                                studyService.finishKnowledgeRela(stuKnowledgeRela);
                             } else {
+                                LOGGER.debug("知识点在第{}次复习次数中第{}被显示", stuKnowledgeRela.getReviewCount() + 1,
+                                        stuKnowledgeRela.getViewCount());
                                 if(stuKnowledgeRela.getViewCount() == 1) {
+                                    LOGGER.debug("知识点已熟记标识为:{}", stuKnowledgeRela.isMemorized());
                                     if(stuKnowledgeRela.isMemorized()) {
-                                        studyService.deleteKnowledgeRela(stuKnowledgeRela);
+                                        studyService.finishKnowledgeRela(stuKnowledgeRela);
                                     }else {
+                                        LOGGER.debug("当前复习次数为:{} ,复习次数跳过1次, 复习次数被保存为:{}, 并标记为已熟记",
+                                                stuKnowledgeRela.getReviewCount(), stuKnowledgeRela.getReviewCount() + 2);
                                         stuKnowledgeRela.setMemorized(true);
                                         studyService.reviewKnowledge(stuKnowledgeRela, 1);
                                     }
@@ -130,6 +134,7 @@ public class StudyController extends LoginedController{
                         break;
                     }
                 }
+                break;
             }
             case HESITATE: {
                 switch (reviewRequest.secondTime) {
@@ -157,7 +162,7 @@ public class StudyController extends LoginedController{
     }
 
     @Data
-    private static class ReviewRequest {
+    public static class ReviewRequest {
         private long knowledgeId;
         private Knowledge.Impress firstTime;
         private Knowledge.Impress secondTime;

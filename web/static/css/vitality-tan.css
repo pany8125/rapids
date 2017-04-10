@@ -1211,7 +1211,7 @@ body.vintage .testimonials .owl-controls .owl-next {
   /*background-color: gray;*/
 }
 .button-group {
-  width: 250px;
+  width: 238px;
   margin: 0 auto;
 }
 .button-group button {
@@ -1229,11 +1229,11 @@ body.vintage .testimonials .owl-controls .owl-next {
 .button-wrapper i {
   font-size: 28px;
 }
-.button-wrapper.check {
+.button-wrapper.REMEMBER {
   background-color: green;
   color: #FFFFFF
 }
-.button-wrapper.remove {
+.button-wrapper.HESITATE {
   background-color: #AE0000;
   color: #FFFFFF
 }

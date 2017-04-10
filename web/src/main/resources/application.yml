@@ -1,0 +1,46 @@
+server:
+  context-path: /rapids-rest
+  website-path: /rapids #nginx path
+  port: 8850
+spring:
+  http:
+    multipart:
+      max-file-size: 10MB
+      enabled: true
+rapids:
+  static:
+    webPath: http://localhost:81/rapids/knowledge/
+    localPath: /Users/David/workspace/idea/outlet/rapids/web/static/knowledge/
+  study:
+    debug: true
+  #每天激活个数
+    enableCount: 50
+  #两次点击"记住"的间隔时间限制
+    intervalLimit: 12
+  core:
+    studyTimesRule:
+          - 0
+          - 300 #5 * 60
+          - 1800 #30 * 60
+          - 7200 #2 * 60 * 60
+          - 28800 #8 * 60 * 60
+          - 86400 #24 * 60 * 60
+          - 86400 #24 * 60 * 60
+          - 86400 #24 * 60 * 60
+          - 172800 #2 * 24 * 60 * 60
+          - 172800 #2 * 24 * 60 * 60
+          - 432000 #5 * 24 * 60 * 60
+          - 432000 #5 * 24 * 60 * 60
+          - 432000 #5 * 24 * 60 * 60
+          - 432000 #5 * 24 * 60 * 60
+          - 432000 #5 * 24 * 60 * 60
+          - -1
+    database:
+#      driverURL: jdbc:mysql://125.39.110.20:3306/memory_study?useUnicode=true&characterEncoding=UTF-8
+#      userName: rapids
+#      password: rps888#$%
+      driverURL: jdbc:mysql://localhost:3306/memory_study?useUnicode=true&characterEncoding=UTF-8
+      userName: root
+      initialSize: 3
+      minIdle: 3
+      maxActive: 30

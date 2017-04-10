@@ -135,15 +135,15 @@
             checkStudyStatus();
             function checkStudyStatus() {
                 $.ajax({
-                    url: restPath + "/study/checkStudyStatus",
+                    url: restPath + "/study/next",
                     success: function (entity, message, xhr) {
-                        if(xhr.status == 204) {
-                            getPackages();
+                        if(xhr.status == 200) {
+                            window.location.href = "study.html";
                         }
                     },
                     error: function(resp) {
-                        if(resp.status == 302) {
-                            window.location.href = "study.html";
+                        if(resp.status == 404) {
+                            getPackages();
                         }
                     }
                 });
