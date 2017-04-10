@@ -18,4 +18,6 @@ public interface StuPackRelaRepo extends PagingAndSortingRepository<StuPackRela,
     StuPackRela findByStudentIdAndPackId(long studentId, long packId);
 
     List<StuPackRela> findByStudentId(long studentId);
+
+    Long deleteByStudentIdAndPackId(long studentId, long packId);
 }

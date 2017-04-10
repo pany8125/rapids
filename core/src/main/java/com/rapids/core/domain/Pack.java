@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * @author David on 17/2/22.
@@ -21,6 +22,12 @@ public class Pack {
     private String name;
 
     private Type type;
+
+    private String description;
+
+
+    private Date createTime;
+    private String createBy;
 
     @SuppressWarnings({"unused", "WeakerAccess"})
     public enum Type {

@@ -5,8 +5,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author David on 17/2/28.
@@ -47,5 +49,8 @@ public interface StuKnowledgeRelaRepo extends PagingAndSortingRepository<StuKnow
     @Query(value = "SELECT * FROM StuKnowledgeRela WHERE studentId = ?1 and deleted = 0 LIMIT 1", nativeQuery = true)
     StuKnowledgeRela hasDeleteStuKnowledgeRela(long studentId);
 
+    List<StuKnowledgeRela> findByStudentIdAndPackId(long studentId, long packId);
+
+    Long deleteByStudentIdAndPackId(long studentId, long packId);
 
 }

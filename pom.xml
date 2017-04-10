@@ -24,6 +24,7 @@
         <junit.version>4.12</junit.version>
         <mysql.version>5.1.31</mysql.version>
         <spring.version>4.3.6.RELEASE</spring.version>
+        <fastjson.version>1.2.29</fastjson.version>
     </properties>
 
     <dependencyManagement>
@@ -76,6 +77,11 @@
                 <artifactId>lombok</artifactId>
                 <version>1.14.4</version>
             </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
             <!-- test start -->
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -92,7 +98,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-test</artifactId>
-                <version>1.4.0.BUILD-SNAPSHOT</version>
+                <version>1.4.5.RELEASE</version>
                 <scope>test</scope>
             </dependency>
             <!-- test end -->
