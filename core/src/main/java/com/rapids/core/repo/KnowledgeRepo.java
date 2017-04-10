@@ -26,4 +26,5 @@ public interface KnowledgeRepo extends PagingAndSortingRepository<Knowledge, Lon
     @Query(value = "SELECT count(*) FROM Knowledge " +
             "WHERE packId = ?1 ", nativeQuery = true)
     long countByPackId(Long packId);
+    Knowledge findByNameAndEditor(String name, String editor);
 }
