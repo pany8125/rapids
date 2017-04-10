@@ -36,11 +36,11 @@ rapids:
           - 432000 #5 * 24 * 60 * 60
           - -1
     database:
-      driverURL: jdbc:mysql://125.39.110.20:3306/memory_study?useUnicode=true&characterEncoding=UTF-8
-      userName: rapids
-      password: rps888#$%
-#      driverURL: jdbc:mysql://localhost:3306/memory_study?useUnicode=true&characterEncoding=UTF-8
-#      userName: root
+#      driverURL: jdbc:mysql://125.39.110.20:3306/memory_study?useUnicode=true&characterEncoding=UTF-8
+#      userName: rapids
+#      password: rps888#$%
+      driverURL: jdbc:mysql://localhost:3306/memory_study?useUnicode=true&characterEncoding=UTF-8
+      userName: root
       initialSize: 3
       minIdle: 3
       maxActive: 30
