@@ -148,8 +148,6 @@
     <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="js/classie.js"></script>
     <script src="js/cbpAnimatedHeader.js"></script>
-
-    <!-- Plugin Scripts -->
     <script src="vendor/jquery.easing/jquery.easing.min.js"></script>
     <script src="vendor/owl-carousel/owl.carousel.js"></script>
     <script src="vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
@@ -158,11 +156,7 @@
     <script src="vendor/formstone/background.js"></script>
     <script src="vendor/mixitup/jquery.mixitup.js"></script>
     <script src="vendor/wow/wow.min.js"></script>
-
-    <!-- Contact Form Scripts -->
-    <script src="js/contact_me.js"></script>
-    <script src="js/jqBootstrapValidation.js"></script>
-
+    <script src="vendor/jquery/plugins/loadingoverlay.min.js"></script>
     <!-- Vitality Theme Scripts -->
     <script src="js/vitality.js"></script>
     <script type="text/javascript">
@@ -190,10 +184,35 @@
                 Err("妙记描述不能大于200个字");
                 return false;
             }
+            if(title.hasClass("duplicate")) {
+                Err("知识点名称不能重复");
+                return false;
+            }
             return true;
         }
         $(document).ready(function() {
-            $("form").prop("action", restPath + "/my/knowledge")
+            $("form").prop("action", restPath + "/my/knowledge");
+            $("#title").on("blur", function () {
+                var title = $(this);
+                if('' != title.val() && !title.hasClass("noChange")) {
+                    title.addClass("noChange");
+                    $.ajax({
+                        url: restPath + "/my/checkName/" + title.val(),
+                        type: "GET",
+                        success: function () {
+                            title.removeClass("duplicate")
+                        },
+                        error: function(resp) {
+                            if(resp.status == 302) {
+                                title.addClass("duplicate");
+                                Err("知识点名称不能重复");
+                            }
+                        }
+                    });
+                }
+            }).on("change", function () {
+                $(this).removeClass("noChange");
+            })
         });
     </script>
 

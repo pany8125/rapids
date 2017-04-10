@@ -10,14 +10,15 @@ import java.util.Date;
  */
 @Entity
 @Data
+@Table(
+        indexes = @Index(columnList = "name, editor", unique = true)
+)
 public class Knowledge {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String name;
     private Long packId;
-    @Column(unique = true)
     private String title;
     private String description;
     private String descPic;

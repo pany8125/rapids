@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.Imaging;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
@@ -68,9 +69,13 @@ public class UploadController extends LoginedController{
         knowledge.setCreateTime(new Date());
         knowledge.setPackId(-1L);
         knowledge.setName(knowledge.getTitle());
-        knowledge.setEditor("student:" + currentStudent().getName());
+        knowledge.setEditor(createEditorName());
         createKnowledge(knowledge, currentStudent());
         return ResponseEntity.status(HttpStatus.FOUND).location(new URI(websitePath + "/upload_success.html")).build();
+    }
+
+    private String createEditorName() {
+        return "student:" + currentStudent().getId();
     }
 
     @Transactional
@@ -84,6 +89,18 @@ public class UploadController extends LoginedController{
         stuKnowledgeRela.setPackId(-1L);
         stuKnowledgeRela.setEnabled(true);
         stuKnowledgeRelaRepo.save(stuKnowledgeRela);
+    }
+
+    @GetMapping("/checkName/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public void checkNameUnique(@PathVariable String name) {
+        if(StringUtils.isBlank(name)) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+        }
+        Knowledge knowledge = knowledgeRepo.findByNameAndEditor(name, createEditorName());
+        if(null != knowledge) {
+            throw new HttpClientErrorException(HttpStatus.FOUND);
+        }
     }
 
     private String checkAndSaveFile(MultipartFile file) throws IOException {

@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface KnowledgeRepo extends PagingAndSortingRepository<Knowledge, Long> {
+
+    Knowledge findByNameAndEditor(String name, String editor);
 }
