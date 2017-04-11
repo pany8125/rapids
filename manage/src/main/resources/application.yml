@@ -1,19 +1,19 @@
-rapids:
-  core:
-    database:
-      driverURL: jdbc:mysql://125.39.110.20:3306/memory_study?useUnicode=true&characterEncoding=UTF-8
-      userName: rapids
-      password: rps888#$%
-      initialSize: 3
-      minIdle: 3
-      maxActive: 30
-
 #rapids:
 #  core:
 #    database:
-#      driverURL: jdbc:mysql://localhost:3306/memory_study?useUnicode=true&characterEncoding=UTF-8
-#      userName: root
-#      password:
+#      driverURL: jdbc:mysql://125.39.110.20:3306/memory_study?useUnicode=true&characterEncoding=UTF-8
+#      userName: rapids
+#      password: rps888#$%
 #      initialSize: 3
 #      minIdle: 3
 #      maxActive: 30
+
+rapids:
+  core:
+    database:
+      driverURL: jdbc:mysql://localhost:3306/memory_study?useUnicode=true&characterEncoding=UTF-8
+      userName: root
+      password:
+      initialSize: 3
+      minIdle: 3
+      maxActive: 30

@@ -66,7 +66,7 @@ public class PackController {
     @RequestMapping(value = "/savePack", method = RequestMethod.POST)
     public ExtStatusEntity savePack(@RequestParam(value = "id", required = false) Long id,
                                      @RequestParam("name") String name,
-                                     @RequestParam("type") String type,
+                                     @RequestParam("type") Pack.Type type,
                                      @RequestParam("description") String description,
                                      @RequestParam("adminName") String adminName) {
         ExtStatusEntity result = new ExtStatusEntity();
@@ -78,7 +78,7 @@ public class PackController {
                 packDTO = this.packService.getById(id);
             }
             packDTO.setName(name);
-            packDTO.setType(Pack.Type.MATH);
+            packDTO.setType(type);
             packDTO.setDescription(description);
             packDTO.setCreateTime(new Date());
             Pack pack = this.packService.save(packDTO);
