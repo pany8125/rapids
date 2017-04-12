@@ -9,8 +9,10 @@ spring:
       enabled: true
 rapids:
   static:
-    webPath: http://localhost:81/rapids/knowledge/
-    localPath: /Users/David/workspace/idea/outlet/rapids/web/static/knowledge/
+    webPath: http://localhost/rapids/knowledge/
+#    webPath: http://localhost:81/rapids/knowledge/
+    localPath:  /Users/scott/Github/rapids/web/static/knowledge/
+#    localPath: /Users/David/workspace/idea/outlet/rapids/web/static/knowledge/
   study:
     debug: false
   #每天激活个数

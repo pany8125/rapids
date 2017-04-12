@@ -37,17 +37,17 @@ var packPop = Ext.create('Ext.window.Window', {
 					name: 'type',
 					xtype: 'combo',
 					store: Ext.create('Ext.data.ArrayStore', {
-						fields: ['value', 'text'],
+						fields: ['text'],
 						data: [
-							[0, 'ENGLISH'],
-							[1, 'MATH'],
-							[2, 'LITERATURE'],
+							['ENGLISH'],
+							['MATH'],
+							['LITERATURE'],
 						]
 					}),
 					editable: false,
 					allowBlank: false,
 					displayField: 'text',
-					valueField: 'value'
+					valueField: 'text'
 				},
 				{
 					fieldLabel: '知识包描述',
