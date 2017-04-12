@@ -78,7 +78,7 @@ public class PackController {
                 packDTO = this.packService.getById(id);
             }
             packDTO.setName(name);
-            packDTO.setType(Pack.Type.MATH);
+            packDTO.setType(Pack.Type.valueOf(type));
             packDTO.setDescription(description);
             packDTO.setCreateTime(new Date());
             Pack pack = this.packService.save(packDTO);

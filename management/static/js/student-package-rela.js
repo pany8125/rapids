@@ -174,7 +174,7 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 					Ext.Msg.alert('系统提示', '请选择学生');
 					return;
 				}
-				_gradeid = records[0].data.id;
+				_studentid = records[0].data.id;
 				Ext.getCmp('relaForm').getForm().reset();
 				Ext.getCmp('relaWin').setTitle('添加');
 				Ext.getCmp('relaWin').show();
