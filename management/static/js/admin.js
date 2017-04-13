@@ -125,6 +125,7 @@ var rolePop = Ext.create('Ext.window.Window', {
                         }
                     }
                 }),
+                editable: false,
                 displayField: 'name',
                 valueField: 'id'
             }]
