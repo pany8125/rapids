@@ -121,11 +121,6 @@ var knowledgePop = Ext.create('Ext.window.Window', {
 				hidden: true
 			},
 				{
-					fieldLabel: '知识点名称',
-					name: 'name',
-					allowBlank: false
-				},
-				{
 					fieldLabel: '标题',
 					name: 'title',
 					allowBlank: false
@@ -212,7 +207,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 	store: Ext.create('Ext.data.JsonStore', {
 		autoLoad: true,
 		storeId: 'centerStore',
-		pageSize: 5, // 每页显示条数
+		pageSize: 3, // 每页显示条数
 		fields: ['id', 'name', 'type', 'description', 'createBy', 'createTime'],
 		proxy: {
 			type: 'ajax',
@@ -297,7 +292,7 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 	columns: [
 		{header: '知识包ID', align: 'center', width: 100, dataIndex: 'packId'},
 		{header: '知识点ID', align: 'center', width: 100, dataIndex: 'id'},
-		{header: '知识点名称', align: 'center', width: 200, dataIndex: 'name'},
+		{header: '知识点名称', align: 'center', width: 200, dataIndex: 'name', hidden:true},
 		{header: '标题', align: 'center', width: 200, dataIndex: 'title'},
 		{header: '内容', align: 'center', width: 200, dataIndex: 'description'},
 		{header: '内容图片地址', align: 'center', width: 200, dataIndex: 'descPic'},
@@ -306,8 +301,8 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 	],
 	store: Ext.create('Ext.data.JsonStore', {
 		storeId: 'southStore',
+		pageSize: 3, // 每页显示条数
 		fields: ['id', 'packId', 'name', 'title', 'description', 'descPic', 'memo', 'memoPic'],
-		pageSize: 6, // 每页显示条数
 		proxy: {
 			type: 'ajax',
 			url: path + '/pack/packKnowledge',
@@ -394,7 +389,7 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 			}
 		}
 	],
-	bbar: Ext.create('Ext.toolbar.Paging', { //TODO:为撒分页不好使
+	bbar: Ext.create('Ext.toolbar.Paging', {
 		store: Ext.data.StoreManager.get('southStore'),
 		displayInfo: true,
 		displayMsg: '第{0}-{1}条，共{2}条',
