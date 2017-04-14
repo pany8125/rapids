@@ -153,7 +153,7 @@ Ext.onReady(function() {
 		
         form.getForm().submit({
 			waitTitle : '系统信息',
-			url: path + '/login/loginValid',   //TODO:提交URL
+			url: path + '/login/loginValid',
  			method : 'post',   //指定发送方式
  			waitMsg:"正在验证登录用户,请稍候..."  ,
 			clientValidation: true,

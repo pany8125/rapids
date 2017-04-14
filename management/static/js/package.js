@@ -389,15 +389,15 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 			}
 		}
 	],
-	bbar: Ext.create('Ext.toolbar.Paging', {
-		store: Ext.data.StoreManager.get('southStore'),
-		displayInfo: true,
-		displayMsg: '第{0}-{1}条，共{2}条',
-		emptyMsg: "没有数据",
-		beforePageText: '第',
-		afterPageText: '页，共 {0} 页'
-	})
 });
+bbar: Ext.create('Ext.toolbar.Paging', { //TODO:无法分页啊???
+	store: Ext.data.StoreManager.get('southStore'),
+	displayInfo: true,
+	displayMsg: '第{0}-{1}条，共{2}条',
+	emptyMsg: "没有数据",
+	beforePageText: '第',
+	afterPageText: '页，共 {0} 页'
+})
 
 //domReady
 Ext.onReady(function () {
