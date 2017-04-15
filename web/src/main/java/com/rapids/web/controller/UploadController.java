@@ -71,7 +71,7 @@ public class UploadController extends LoginedController{
         knowledge.setName(knowledge.getTitle());
         knowledge.setEditor(createEditorName());
         createKnowledge(knowledge, currentStudent());
-        return ResponseEntity.status(HttpStatus.FOUND).location(new URI(websitePath + "/upload_success.html")).build();
+        return ResponseEntity.status(HttpStatus.FOUND).location(new URI(websitePath + "upload_success.html")).build();
     }
 
     private String createEditorName() {
