@@ -113,7 +113,7 @@ public class UploadController extends LoginedController{
                 String newFileName = DigestUtils.md5DigestAsHex(UUID.randomUUID().toString().getBytes()) + "." + fileType;
                 File newFile = new File(localStaticFilePath + newFileName);
                 file.transferTo(newFile);
-                LOGGER.debug("desc file saved : {}", newFile);
+                LOGGER.info("file saved : {}", newFile);
                 return webPath + subPath + newFileName;
             }
         } catch (ImageReadException e) {
