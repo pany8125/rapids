@@ -108,7 +108,7 @@ public class PackController {
                                      @RequestParam("memoPic") String memoPic,
                                      @RequestParam("adminName") String adminName) {
         ExtStatusEntity result = new ExtStatusEntity();
-        if(!packService.getKnowledgeByName(title).isEmpty()) {
+        if((null==id)&&(!packService.getKnowledgeByName(title).isEmpty())) {
             result.setMsg("知识点标题已存在");
             result.setSuccess(false);
             return result;

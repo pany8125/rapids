@@ -90,8 +90,8 @@ var packPop = Ext.create('Ext.window.Window', {
 var knowledgePop = Ext.create('Ext.window.Window', {
 	id: 'knowledgeWin',
 	title: '增加',
-	height: 500,
-	width: 400,
+	height: 720,
+	width: 600,
 	bodyPadding: 5,
 	maximizable: true,
 	modal: true,
@@ -106,7 +106,7 @@ var knowledgePop = Ext.create('Ext.window.Window', {
 			defaults: {
 				anchor: '80%',
 				labelAlign: 'right',
-				labelWidth: 80,
+				labelWidth: 100,
 				blankText: '必填项'
 			},
 			// The fields
@@ -127,24 +127,147 @@ var knowledgePop = Ext.create('Ext.window.Window', {
 				},
 				{
 					fieldLabel: '内容',
+					xtype: 'textarea',
 					name: 'description',
-					allowBlank: false
+					allowBlank: false,
+					grow      : true
 				},
 				{
-					fieldLabel: '内容图片地址',//TODO:图片upload
+					fieldLabel: '内容图片地址',
 					name: 'descPic',
-					allowBlank: false
+					editable: false
 				},
+				//{ TODO:图片预览再调整下
+				//	xtype: 'image',
+				//	name: 'descPicSrc',
+				//	src:  'http://www.sencha.com/img/20110215-feat-html5.png',
+				//	width: 90,
+				//	height: 180,
+				//	renderTo: Ext.getBody(),
+				//	style: 'filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale);' //必不可少，否则IE下无法预览
+				//},
 				{
 					fieldLabel: '秒记忆',
 					name: 'memo',
-					allowBlank: false
+					xtype: 'textarea',
+					allowBlank: false,
+					grow      : true
 				},
 				{
 					fieldLabel: '秒记忆图片地址',
 					name: 'memoPic',
-					allowBlank: false
-				}]
+					editable: false
+				}
+				//,
+				//{
+				//	xtype: 'image',
+				//	name: 'memoPicSrc',
+				//	src:  'http://www.sencha.com/img/20110215-feat-html5.png',
+				//	width: 90,
+				//	height: 180,
+				//	renderTo: Ext.getBody(),
+				//	style: 'filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale);' //必不可少，否则IE下无法预览
+				//}
+			]
+		}),
+		//覆盖图片的选择上传功能
+		Ext.create('Ext.form.Panel', {
+			url: path + '/upload/pic',
+			width: 560,
+			height: 27,
+			layout: 'hbox',
+			id: 'picUploadForm',
+			items: [
+				{
+					fieldLabel: '上传内容图片:',
+					labelWidth: 100,
+					labelAlign: 'right',
+					xtype: 'textfield',
+					width: 320,
+					margin: '0 5 0 0',
+					id: 'picText',
+					readOnly: true
+				},{
+					xtype: 'filefield',
+					buttonText: '浏览',
+					name: 'picFile',
+					buttonOnly: true,
+					listeners: {
+						change: function(fileField, string, eOpts){
+							Ext.getCmp('picText').setValue(string);
+							Ext.getCmp('picUploadBtn').setDisabled(false);
+						}
+					}
+				},{
+					xtype: 'button',
+					id: 'picUploadBtn',
+					text: '上传',
+					disabled: true,
+					margin: '0 0 0 10',
+					handler: function(){
+						Ext.getCmp('picUploadForm').getForm().submit({
+							waitTitle: '系统提示',
+							waitMsg: '图片上传中，请稍候......',
+							success: function(form, action){
+								Ext.getCmp('picUploadBtn').setDisabled(true);
+								Ext.Msg.alert('系统提示', action.result.msg);
+								Ext.getCmp('knowledgeForm').getForm().findField('descPic').setValue(action.result.msg);
+								Ext.getCmp('descPicSrc').setSrc(action.result.msg);
+								Ext.Msg.alert('系统提示', '图片上传成功！');
+							}
+						});
+					}
+				}
+			]
+		}),
+		//覆盖图片的选择上传功能
+		Ext.create('Ext.form.Panel', {
+			url: path + '/upload/memo',
+			width: 560,
+			height: 27,
+			layout: 'hbox',
+			id: 'memoUploadForm',
+			items: [
+				{
+					fieldLabel: '上传妙记图片',
+					labelWidth: 100,
+					labelAlign: 'right',
+					xtype: 'textfield',
+					width: 320,
+					margin: '0 5 0 0',
+					id: 'memoText',
+					readOnly: true
+				},{
+					xtype: 'filefield',
+					buttonText: '浏览',
+					name: 'memoFile',
+					buttonOnly: true,
+					listeners: {
+						change: function(fileField, string, eOpts){
+							Ext.getCmp('memoText').setValue(string);
+							Ext.getCmp('memoUploadBtn').setDisabled(false);
+						}
+					}
+				},{
+					xtype: 'button',
+					id: 'memoUploadBtn',
+					text: '上传',
+					disabled: true,
+					margin: '0 0 0 10',
+					handler: function(){
+						Ext.getCmp('memoUploadForm').getForm().submit({
+							waitTitle: '系统提示',
+							waitMsg: '图片上传中，请稍候......',
+							success: function(form, action){
+								Ext.getCmp('memoUploadBtn').setDisabled(true);
+								Ext.Msg.alert('系统提示', action.result.msg);
+								Ext.getCmp('knowledgeForm').getForm().findField('memoPic').setValue(action.result.msg);
+								Ext.Msg.alert('系统提示', '图片上传成功！');
+							}
+						});
+					}
+				}
+			]
 		})
 	],
 	buttons: [

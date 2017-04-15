@@ -70,7 +70,7 @@ public class PackService {
     }
 
     public List<Knowledge> getKnowledgeByName(String name){
-        return knowledgeRepo.findByByName(name);
+        return knowledgeRepo.findByName(name);
     }
 
     public List<Pack> getPackList(){

@@ -21,7 +21,7 @@ public interface KnowledgeRepo extends PagingAndSortingRepository<Knowledge, Lon
 
     List<Knowledge> findByPackId(long packId);
 
-    List<Knowledge> findByByName(String name);
+    List<Knowledge> findByName(String name);
 
     Page<Knowledge> findByPackId(long packId, Pageable pageable);
 
