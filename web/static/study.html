@@ -83,7 +83,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2 style="font-size: 10px;">People</h2>
+                        <h2 style="">People</h2>
                     </div>
                 </div>
             </div>
@@ -292,6 +292,7 @@
             }
             $("button.impress").bind("click", function() {
                 var button = $(this);
+                console.log(requestBody);
                 if(button.hasClass("disabled")) {
                     return false;
                 }
@@ -305,7 +306,12 @@
                     requestBody.secondTime = impress;
                     requestBody.interval = parseInt(((new Date().getTime() - firstClickTime)/ 1000).toFixed(0), 10);
                     if("REMEMBER" == requestBody.firstTime) {
-                        goNext();
+                        if("FORGOT" == requestBody.secondTime) {
+                            showTitle();
+                            clearRequest();
+                        }else {
+                            goNext();
+                        }
                     }else if("HESITATE" == requestBody.firstTime) {
                         if("REMEMBER" == requestBody.secondTime) {
                             goNext();
