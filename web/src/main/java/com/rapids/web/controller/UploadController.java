@@ -111,7 +111,7 @@ public class UploadController extends LoginedController{
                 File localStaticFilePath = new File(localPath + subPath);
                 FileUtils.forceMkdir(localStaticFilePath);
                 String newFileName = DigestUtils.md5DigestAsHex(UUID.randomUUID().toString().getBytes()) + "." + fileType;
-                File newFile = new File(localStaticFilePath + newFileName);
+                File newFile = new File(localStaticFilePath + "/" + newFileName);
                 file.transferTo(newFile);
                 LOGGER.info("file saved : {}", newFile);
                 return webPath + subPath + newFileName;
