@@ -331,7 +331,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 	store: Ext.create('Ext.data.JsonStore', {
 		autoLoad: true,
 		storeId: 'centerStore',
-		pageSize: 3, // 每页显示条数
+		pageSize: 6, // 每页显示条数
 		fields: ['id', 'name', 'type', 'description', 'createBy', 'createTime'],
 		proxy: {
 			type: 'ajax',
@@ -425,7 +425,7 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 	],
 	store: Ext.create('Ext.data.JsonStore', {
 		storeId: 'southStore',
-		pageSize: 3, // 每页显示条数
+		pageSize: itemsPerPage, // 每页显示条数
 		fields: ['id', 'packId', 'name', 'title', 'description', 'descPic', 'memo', 'memoPic'],
 		proxy: {
 			type: 'ajax',
@@ -466,6 +466,8 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 				knowledgePop.setTitle('编辑');
 				knowledgePop.show();
 				Ext.getCmp('knowledgeForm').loadRecord(models[0]);
+				Ext.getCmp('descPicSrc').setSrc(models[0].data.descPic);
+				Ext.getCmp('memoPicSrc').setSrc(models[0].data.memoPic);
 			}
 
 		}, {
