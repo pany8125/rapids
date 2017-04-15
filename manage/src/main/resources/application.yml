@@ -23,4 +23,4 @@ file:
 #    path: /Users/scott/apache-tomcat-7.0.57/webapps/upload/
     path: /Users/scott/Github/rapids/management/static/img/upload/
   download:
-    url: http://localhost/rapids-img/upload/
+    url: http://localhost/static/img/upload/
