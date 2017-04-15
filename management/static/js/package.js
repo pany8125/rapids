@@ -90,8 +90,8 @@ var packPop = Ext.create('Ext.window.Window', {
 var knowledgePop = Ext.create('Ext.window.Window', {
 	id: 'knowledgeWin',
 	title: '增加',
-	height: 500,
-	width: 400,
+	height: 720,
+	width: 600,
 	bodyPadding: 5,
 	maximizable: true,
 	modal: true,
@@ -106,7 +106,7 @@ var knowledgePop = Ext.create('Ext.window.Window', {
 			defaults: {
 				anchor: '80%',
 				labelAlign: 'right',
-				labelWidth: 80,
+				labelWidth: 100,
 				blankText: '必填项'
 			},
 			// The fields
@@ -121,35 +121,154 @@ var knowledgePop = Ext.create('Ext.window.Window', {
 				hidden: true
 			},
 				{
-					fieldLabel: '知识点名称',
-					name: 'name',
-					allowBlank: false
-				},
-				{
 					fieldLabel: '标题',
 					name: 'title',
 					allowBlank: false
 				},
 				{
 					fieldLabel: '内容',
+					xtype: 'textarea',
 					name: 'description',
-					allowBlank: false
+					allowBlank: false,
+					grow      : true
 				},
 				{
-					fieldLabel: '内容图片地址',//TODO:图片upload
+					fieldLabel: '内容图片地址',
 					name: 'descPic',
-					allowBlank: false
+					editable: false
+				},
+				{
+					xtype: 'image',
+					name: 'descPicSrc',
+					id: 'descPicSrc',
+					src:  Ext.BLANK_IMAGE_URL,
+					width: 90,
+					height: 180,
+					renderTo: Ext.getBody(),
+					style: 'filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale);' //必不可少，否则IE下无法预览
 				},
 				{
 					fieldLabel: '秒记忆',
 					name: 'memo',
-					allowBlank: false
+					xtype: 'textarea',
+					allowBlank: false,
+					grow      : true
 				},
 				{
 					fieldLabel: '秒记忆图片地址',
 					name: 'memoPic',
-					allowBlank: false
-				}]
+					editable: false
+				}
+				,
+				{
+					xtype: 'image',
+					name: 'memoPicSrc',
+					id: 'memoPicSrc',
+					src:  Ext.BLANK_IMAGE_URL,
+					width: 90,
+					height: 180,
+					renderTo: Ext.getBody(),
+					style: 'filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale);' //必不可少，否则IE下无法预览
+				}
+			]
+		}),
+		//覆盖图片的选择上传功能
+		Ext.create('Ext.form.Panel', {
+			url: path + '/upload/pic',
+			width: 560,
+			height: 27,
+			layout: 'hbox',
+			id: 'picUploadForm',
+			items: [
+				{
+					fieldLabel: '上传内容图片:',
+					labelWidth: 100,
+					labelAlign: 'right',
+					xtype: 'textfield',
+					width: 320,
+					margin: '0 5 0 0',
+					id: 'picText',
+					readOnly: true
+				},{
+					xtype: 'filefield',
+					buttonText: '浏览',
+					name: 'picFile',
+					buttonOnly: true,
+					listeners: {
+						change: function(fileField, string, eOpts){
+							Ext.getCmp('picText').setValue(string);
+							Ext.getCmp('picUploadBtn').setDisabled(false);
+						}
+					}
+				},{
+					xtype: 'button',
+					id: 'picUploadBtn',
+					text: '上传',
+					disabled: true,
+					margin: '0 0 0 10',
+					handler: function(){
+						Ext.getCmp('picUploadForm').getForm().submit({
+							waitTitle: '系统提示',
+							waitMsg: '图片上传中，请稍候......',
+							success: function(form, action){
+								Ext.getCmp('picUploadBtn').setDisabled(true);
+								Ext.getCmp('knowledgeForm').getForm().findField('descPic').setValue(action.result.msg);
+								Ext.getCmp('descPicSrc').setSrc(action.result.msg);
+								Ext.Msg.alert('系统提示', '图片上传成功！');
+							}
+						});
+					}
+				}
+			]
+		}),
+		//覆盖图片的选择上传功能
+		Ext.create('Ext.form.Panel', {
+			url: path + '/upload/memo',
+			width: 560,
+			height: 27,
+			layout: 'hbox',
+			id: 'memoUploadForm',
+			items: [
+				{
+					fieldLabel: '上传妙记图片',
+					labelWidth: 100,
+					labelAlign: 'right',
+					xtype: 'textfield',
+					width: 320,
+					margin: '0 5 0 0',
+					id: 'memoText',
+					readOnly: true
+				},{
+					xtype: 'filefield',
+					buttonText: '浏览',
+					name: 'memoFile',
+					buttonOnly: true,
+					listeners: {
+						change: function(fileField, string, eOpts){
+							Ext.getCmp('memoText').setValue(string);
+							Ext.getCmp('memoUploadBtn').setDisabled(false);
+						}
+					}
+				},{
+					xtype: 'button',
+					id: 'memoUploadBtn',
+					text: '上传',
+					disabled: true,
+					margin: '0 0 0 10',
+					handler: function(){
+						Ext.getCmp('memoUploadForm').getForm().submit({
+							waitTitle: '系统提示',
+							waitMsg: '图片上传中，请稍候......',
+							success: function(form, action){
+								Ext.getCmp('memoUploadBtn').setDisabled(true);
+								Ext.getCmp('knowledgeForm').getForm().findField('memoPic').setValue(action.result.msg);
+								Ext.getCmp('memoPicSrc').setSrc(action.result.msg);
+								Ext.Msg.alert('系统提示', '图片上传成功！');
+							}
+						});
+					}
+				}
+			]
 		})
 	],
 	buttons: [
@@ -212,7 +331,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 	store: Ext.create('Ext.data.JsonStore', {
 		autoLoad: true,
 		storeId: 'centerStore',
-		pageSize: 5, // 每页显示条数
+		pageSize: 6, // 每页显示条数
 		fields: ['id', 'name', 'type', 'description', 'createBy', 'createTime'],
 		proxy: {
 			type: 'ajax',
@@ -297,7 +416,7 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 	columns: [
 		{header: '知识包ID', align: 'center', width: 100, dataIndex: 'packId'},
 		{header: '知识点ID', align: 'center', width: 100, dataIndex: 'id'},
-		{header: '知识点名称', align: 'center', width: 200, dataIndex: 'name'},
+		{header: '知识点名称', align: 'center', width: 200, dataIndex: 'name', hidden:true},
 		{header: '标题', align: 'center', width: 200, dataIndex: 'title'},
 		{header: '内容', align: 'center', width: 200, dataIndex: 'description'},
 		{header: '内容图片地址', align: 'center', width: 200, dataIndex: 'descPic'},
@@ -306,8 +425,8 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 	],
 	store: Ext.create('Ext.data.JsonStore', {
 		storeId: 'southStore',
+		pageSize: itemsPerPage, // 每页显示条数
 		fields: ['id', 'packId', 'name', 'title', 'description', 'descPic', 'memo', 'memoPic'],
-		pageSize: 6, // 每页显示条数
 		proxy: {
 			type: 'ajax',
 			url: path + '/pack/packKnowledge',
@@ -347,6 +466,8 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 				knowledgePop.setTitle('编辑');
 				knowledgePop.show();
 				Ext.getCmp('knowledgeForm').loadRecord(models[0]);
+				Ext.getCmp('descPicSrc').setSrc(models[0].data.descPic);
+				Ext.getCmp('memoPicSrc').setSrc(models[0].data.memoPic);
 			}
 
 		}, {
@@ -394,15 +515,15 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 			}
 		}
 	],
-	bbar: Ext.create('Ext.toolbar.Paging', { //TODO:为撒分页不好使
-		store: Ext.data.StoreManager.get('southStore'),
-		displayInfo: true,
-		displayMsg: '第{0}-{1}条，共{2}条',
-		emptyMsg: "没有数据",
-		beforePageText: '第',
-		afterPageText: '页，共 {0} 页'
-	})
 });
+bbar: Ext.create('Ext.toolbar.Paging', { //TODO:无法分页啊???
+	store: Ext.data.StoreManager.get('southStore'),
+	displayInfo: true,
+	displayMsg: '第{0}-{1}条，共{2}条',
+	emptyMsg: "没有数据",
+	beforePageText: '第',
+	afterPageText: '页，共 {0} 页'
+})
 
 //domReady
 Ext.onReady(function () {

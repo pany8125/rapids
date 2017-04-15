@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Import;
  */
 @EnableAutoConfiguration
 @Import(CoreConfig.class)
-@ComponentScan("com.rapids.manage.controller")
+@ComponentScan({"com.rapids.manage.controller", "com.rapids.manage.service"})
 public class ManageBoot {
     public static void main(String[] args) {
         SpringApplication.run(ManageBoot.class, args);

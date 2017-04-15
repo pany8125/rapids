@@ -101,7 +101,6 @@ public class PackController {
     @RequestMapping(value = "/saveKnowledge", method = RequestMethod.POST)
     public ExtStatusEntity saveKnowledge(@RequestParam(value = "id", required = false) Long id,
                                      @RequestParam("packIdF") Long packId,
-                                     @RequestParam("name") String name,
                                      @RequestParam("title") String title,
                                      @RequestParam("description") String description,
                                      @RequestParam("descPic") String descPic,
@@ -109,6 +108,11 @@ public class PackController {
                                      @RequestParam("memoPic") String memoPic,
                                      @RequestParam("adminName") String adminName) {
         ExtStatusEntity result = new ExtStatusEntity();
+        if((null==id)&&(!packService.getKnowledgeByName(title).isEmpty())) {
+            result.setMsg("知识点标题已存在");
+            result.setSuccess(false);
+            return result;
+        }
         try {
             Knowledge knowledgeDTO = new Knowledge();
             if (id == null) {
@@ -117,11 +121,12 @@ public class PackController {
             } else {
                 knowledgeDTO = this.packService.getKnowledgeById(id);
             }
-            knowledgeDTO.setName(name);
+            knowledgeDTO.setName(title);
             knowledgeDTO.setTitle(title);
             knowledgeDTO.setDescription(description);
             knowledgeDTO.setDescPic(descPic);
             knowledgeDTO.setMemo(memo);
+            knowledgeDTO.setCreateTime(new Date());
             knowledgeDTO.setMemoPic(memoPic);
             Knowledge knowledge = this.packService.saveKnowledge(knowledgeDTO);
             if (null == knowledge) {

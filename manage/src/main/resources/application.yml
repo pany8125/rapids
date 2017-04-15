@@ -17,3 +17,10 @@ rapids:
       initialSize: 3
       minIdle: 3
       maxActive: 30
+
+file:
+  upload:
+#    path: /Users/scott/apache-tomcat-7.0.57/webapps/upload/
+    path: /Users/scott/Github/rapids/management/static/img/upload/
+  download:
+    url: http://localhost/static/img/upload/

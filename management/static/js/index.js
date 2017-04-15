@@ -80,7 +80,7 @@ var centerPanel = Ext.create('Ext.tab.Panel', {
 //
 Ext.onReady(function(){
 	if(!adminName){
-		top.location.href = '/management/login.html';
+		top.location.href = '/login.html';
 	}
 	Ext.create('Ext.container.Viewport', {
 		layout: 'border',

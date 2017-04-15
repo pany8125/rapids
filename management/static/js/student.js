@@ -419,7 +419,7 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 			}
 		}
 	],
-	bbar: Ext.create('Ext.toolbar.Paging', {
+	bbar: Ext.create('Ext.toolbar.Paging', { //TODO:无法分页啊???
 		store: Ext.data.StoreManager.get('southStore'),
 		displayInfo: true,
 		displayMsg: '第{0}-{1}条，共{2}条',
