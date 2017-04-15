@@ -65,7 +65,7 @@ public class UploadController extends LoginedController{
         Knowledge knowledge = new Knowledge();
         BeanUtils.copyProperties(knowledgeReq, knowledge);
         knowledge.setDescPic(checkAndSaveFile(descFile));
-        knowledge.setDescPic(checkAndSaveFile(memoFile));
+        knowledge.setMemoPic(checkAndSaveFile(memoFile));
         knowledge.setCreateTime(new Date());
         knowledge.setPackId(-1L);
         knowledge.setName(knowledge.getTitle());
