@@ -23,7 +23,9 @@ function dialog(type, msg) {
         "left": (windowWidth - $aWidth)/2,
         "width": $aWidth
     }).find("span").html(msg);
-    
+}
+function closeDialog() {
+    $(".alert").addClass("hide");
 }
 function commonError(response, callback) {
     if(callback) {

@@ -197,7 +197,8 @@
                         url: restPath + "/my/checkName/" + title.val(),
                         type: "GET",
                         success: function () {
-                            title.removeClass("duplicate")
+                            title.removeClass("duplicate");
+                            closeDialog();
                         },
                         error: function(resp) {
                             if(resp.status == 302) {
