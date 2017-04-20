@@ -65,13 +65,13 @@ public class UploadController extends LoginedController{
         Knowledge knowledge = new Knowledge();
         BeanUtils.copyProperties(knowledgeReq, knowledge);
         knowledge.setDescPic(checkAndSaveFile(descFile));
-        knowledge.setDescPic(checkAndSaveFile(memoFile));
+        knowledge.setMemoPic(checkAndSaveFile(memoFile));
         knowledge.setCreateTime(new Date());
         knowledge.setPackId(-1L);
         knowledge.setName(knowledge.getTitle());
         knowledge.setEditor(createEditorName());
         createKnowledge(knowledge, currentStudent());
-        return ResponseEntity.status(HttpStatus.FOUND).location(new URI(websitePath + "/upload_success.html")).build();
+        return ResponseEntity.status(HttpStatus.FOUND).location(new URI(websitePath + "upload_success.html")).build();
     }
 
     private String createEditorName() {
@@ -111,9 +111,9 @@ public class UploadController extends LoginedController{
                 File localStaticFilePath = new File(localPath + subPath);
                 FileUtils.forceMkdir(localStaticFilePath);
                 String newFileName = DigestUtils.md5DigestAsHex(UUID.randomUUID().toString().getBytes()) + "." + fileType;
-                File newFile = new File(localStaticFilePath + newFileName);
+                File newFile = new File(localStaticFilePath + "/" + newFileName);
                 file.transferTo(newFile);
-                LOGGER.debug("desc file saved : {}", newFile);
+                LOGGER.info("file saved : {}", newFile);
                 return webPath + subPath + newFileName;
             }
         } catch (ImageReadException e) {
