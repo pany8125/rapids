@@ -167,6 +167,11 @@ public class PackController {
     @RequestMapping(value = "/delPack")
     public ExtStatusEntity delPack(@RequestParam("id") Long id) {
         ExtStatusEntity entity = new ExtStatusEntity();
+        if(packService.countByPackId(id)>0){
+            entity.setMsg("该知识包下还有知识点,无法删除!");
+            entity.setSuccess(false);
+            return entity;
+        }
         try {
             this.packService.delPack(id);
             entity.setMsg("succeed");

@@ -90,12 +90,14 @@ public class PackService {
 
     @Transactional
     public void delPack(Long id){
+        this.stuPackRelaRepo.deleteByPackId(id);
         this.packRepo.delete(id);
     }
 
 
     @Transactional
     public void delKnowledge(Long id){
+        this.stuKnowledgeRelaRepo.deleteByKnowledgeId(id);
         this.knowledgeRepo.delete(id);
     }
 

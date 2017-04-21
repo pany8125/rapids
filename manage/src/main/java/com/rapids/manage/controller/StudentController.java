@@ -167,6 +167,11 @@ public class StudentController {
     @RequestMapping(value = "/delGrade")
     public ExtStatusEntity delGrade(@RequestParam("id") Long id) {
         ExtStatusEntity entity = new ExtStatusEntity();
+        if(gradeService.countByGradeId(id)>0){
+            entity.setMsg("该班级下还有学生,无法删除!");
+            entity.setSuccess(false);
+            return entity;
+        }
         try {
             this.gradeService.delGrade(id);
             entity.setMsg("succeed");
