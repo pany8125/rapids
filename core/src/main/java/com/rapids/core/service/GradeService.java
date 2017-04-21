@@ -4,8 +4,7 @@ import com.rapids.core.domain.Grade;
 import com.rapids.core.domain.Student;
 import com.rapids.core.domain.Grade;
 import com.rapids.core.domain.Student;
-import com.rapids.core.repo.GradeRepo;
-import com.rapids.core.repo.StudentRepo;
+import com.rapids.core.repo.*;
 import com.rapids.core.repo.GradeRepo;
 import com.rapids.core.repo.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,10 @@ public class GradeService {
     private GradeRepo gradeRepo;
     @Autowired
     private StudentRepo studentRepo;
+    @Autowired
+    private StuPackRelaRepo stuPackRelaRepo;
+    @Autowired
+    private StuKnowledgeRelaRepo stuKnowledgeRelaRepo;
 
     public Grade save(Grade grade){
         return gradeRepo.save(grade);
@@ -67,6 +70,8 @@ public class GradeService {
 
     @Transactional
     public void delStudent(Long id){
+        this.stuPackRelaRepo.deleteByStudentId(id);
+        this.stuKnowledgeRelaRepo.deleteByStudentId(id);
         this.studentRepo.delete(id);
     }
 

@@ -208,6 +208,30 @@ var studentPop = Ext.create('Ext.window.Window', {
 	]
 });
 
+var southStore = Ext.create('Ext.data.JsonStore', {
+	storeId: 'southStore',
+	pageSize: itemsPerPage, // 每页显示条数
+	totalProperty: 'result',
+	fields: ['id', 'gradeId', 'mobile', 'password', 'name', 'age', 'sex', 'email'],
+	proxy: {
+		type: 'ajax',
+		url: path + '/grade/gradeStudent',
+		reader: {
+			totalProperty: 'results',
+			root: 'rows'
+		}
+	}
+});
+
+var southPaging = Ext.create('Ext.toolbar.Paging', { //TODO:无法分页啊???
+	store: southStore,
+	displayInfo: true,
+	displayMsg: '第{0}-{1}条，共{2}条',
+	emptyMsg: "没有数据",
+	beforePageText: '第',
+	afterPageText: '页，共 {0} 页'
+});
+
 var centerPanel = Ext.create('Ext.grid.Panel', {
 	region: 'center',
 	title: '班级列表',
@@ -220,7 +244,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 	selModel: {
 		listeners: {
 			select: function (rowModel, record, index, eOpts) {
-				southPanel.getStore().load({params: {gradeId: record.data.id}});
+				southStore.load({params: {gradeId: record.data.id,start:0,limit:itemsPerPage,page:1}});
 			}
 		},
 		mode: 'MULTI'
@@ -281,7 +305,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 							scope: this,
 							async: true,
 							success: function (response, options) {
-								Ext.Msg.alert("系统提示", "删除成功");
+								Ext.Msg.alert('系统提示', Ext.decode(response.responseText).msg);
 								centerPanel.getStore().reload();
 								southPanel.getStore().reload();
 							},
@@ -329,19 +353,7 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 		}},
 		{header: '邮箱', align: 'center', width: 200, dataIndex: 'email'}
 	],
-	store: Ext.create('Ext.data.JsonStore', {
-		storeId: 'southStore',
-		pageSize: itemsPerPage, // 每页显示条数
-		fields: ['id', 'gradeId', 'mobile', 'password', 'name', 'age', 'sex', 'email'],
-		proxy: {
-			type: 'ajax',
-			url: path + '/grade/gradeStudent',
-			reader: {
-				totalProperty: 'results',
-				root: 'rows'
-			}
-		}
-	}),
+	store: southStore,
 	tbar: [
 		{	//计划列表表头添加按钮
 			xtype: 'button',
@@ -381,24 +393,28 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 			handler: function () {
 				var records = southPanel.getSelectionModel().getSelection();
 				if (records.length == 0) {
-					Ext.Msg.alert('系统提示', '请选择要删除的知识点。');
+					Ext.Msg.alert('系统提示', '请选择要删除的学生。');
 					return;
 				}
 				Ext.Msg.confirm('系统提示', '您确认要删除吗?', function (option) {
 					if ('yes' === option) {
-						Ext.Ajax.request({
-							url: path + '/grade/delStudent?id=' + records[0].data.id,
-							scope: this,
-							async: true,
-							success: function (response, options) {
-								Ext.Msg.alert("系统提示", "删除成功");
-								centerPanel.getStore().reload();
-								southPanel.getStore().reload();
-							},
-							failure: function (form, action) {
-								Ext.Msg.alert('系统提示', action.result.msg);
+						Ext.Msg.confirm('系统提示', '删除学生,将会删除学生下所有关联的知识包,确认要删除吗?', function (option) {
+							if ('yes' === option) {
+								Ext.Ajax.request({
+									url: path + '/grade/delStudent?id=' + records[0].data.id,
+									scope: this,
+									async: true,
+									success: function (response, options) {
+										Ext.Msg.alert('系统提示', Ext.decode(response.responseText).msg);
+										centerPanel.getStore().reload();
+										southPanel.getStore().reload();
+									},
+									failure: function (form, action) {
+										Ext.Msg.alert('系统提示', action.result.msg);
+									}
+								});
 							}
-						});
+						})
 					}
 				});
 			}
@@ -419,15 +435,9 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 			}
 		}
 	],
-	bbar: Ext.create('Ext.toolbar.Paging', { //TODO:无法分页啊???
-		store: Ext.data.StoreManager.get('southStore'),
-		displayInfo: true,
-		displayMsg: '第{0}-{1}条，共{2}条',
-		emptyMsg: "没有数据",
-		beforePageText: '第',
-		afterPageText: '页，共 {0} 页'
-	})
+	bbar: southPaging
 });
+
 
 //domReady
 Ext.onReady(function () {

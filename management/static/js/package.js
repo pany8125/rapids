@@ -384,7 +384,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 							scope: this,
 							async: true,
 							success: function (response, options) {
-								Ext.Msg.alert("系统提示", "删除成功");
+								Ext.Msg.alert('系统提示', Ext.decode(response.responseText).msg);
 								centerPanel.getStore().reload();
 								southPanel.getStore().reload();
 							},
@@ -481,19 +481,23 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 				}
 				Ext.Msg.confirm('系统提示', '您确认要删除吗?', function (option) {
 					if ('yes' === option) {
-						Ext.Ajax.request({
-							url: path + '/pack/delKnowledge?id=' + records[0].data.id,
-							scope: this,
-							async: true,
-							success: function (response, options) {
-								Ext.Msg.alert("系统提示", "删除成功");
-								centerPanel.getStore().reload();
-								southPanel.getStore().reload();
-							},
-							failure: function (form, action) {
-								Ext.Msg.alert('系统提示', action.result.msg);
+						Ext.Msg.confirm('系统提示', '删除知识点将会同时删除该知识点在所有学生下的关联,且无法恢复,是否一定需要删除?', function (option) {
+							if ('yes' === option) {
+								Ext.Ajax.request({
+									url: path + '/pack/delKnowledge?id=' + records[0].data.id,
+									scope: this,
+									async: true,
+									success: function (response, options) {
+										Ext.Msg.alert('系统提示', Ext.decode(response.responseText).msg);
+										centerPanel.getStore().reload();
+										southPanel.getStore().reload();
+									},
+									failure: function (form, action) {
+										Ext.Msg.alert('系统提示', action.result.msg);
+									}
+								});
 							}
-						});
+						})
 					}
 				});
 			}

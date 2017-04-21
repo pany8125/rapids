@@ -53,4 +53,8 @@ public interface StuKnowledgeRelaRepo extends PagingAndSortingRepository<StuKnow
 
     Long deleteByStudentIdAndPackId(long studentId, long packId);
 
+    Long deleteByStudentId(long studentId);
+
+    Long deleteByKnowledgeId(long knowledgeId);
+
 }
