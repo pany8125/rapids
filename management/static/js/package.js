@@ -372,7 +372,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 			xtype: 'button',
 			text: '修改知识包',
 			handler: function () {
-				var models = southPanel.getSelectionModel().getSelection();
+				var models = centerPanel.getSelectionModel().getSelection();
 				if (models.length <= 0) {
 					Ext.Msg.alert('系统提示', '请选择要编辑的数据');
 					return;
