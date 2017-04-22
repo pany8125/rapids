@@ -217,7 +217,7 @@ var southStore = Ext.create('Ext.data.JsonStore', {
 		type: 'ajax',
 		url: path + '/grade/gradeStudent',
 		reader: {
-			totalProperty: 'results',
+			totalProperty: 'result',
 			root: 'rows'
 		}
 	}
