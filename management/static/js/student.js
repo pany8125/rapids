@@ -224,7 +224,7 @@ var southStore = Ext.create('Ext.data.JsonStore', {
 });
 
 
-var southPaging = Ext.create('Ext.toolbar.Paging', { //TODO:无法分页啊???
+var southPaging = Ext.create('Ext.toolbar.Paging', {
 	store: southStore,
 	displayInfo: true,
 	displayMsg: '第{0}-{1}条，共{2}条',
