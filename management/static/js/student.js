@@ -223,7 +223,8 @@ var southStore = Ext.create('Ext.data.JsonStore', {
 	}
 });
 
-var southPaging = Ext.create('Ext.toolbar.Paging', { //TODO:无法分页啊???
+
+var southPaging = Ext.create('Ext.toolbar.Paging', {
 	store: southStore,
 	displayInfo: true,
 	displayMsg: '第{0}-{1}条，共{2}条',
@@ -438,6 +439,15 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 	bbar: southPaging
 });
 
+
+southStore.on("beforeload",function(){
+	var records = centerPanel.getSelectionModel().getSelection();
+	if (records.length == 0) {
+		Ext.Msg.alert('系统提示', '请选择班级');
+		return;
+	}
+	Ext.apply(southStore.proxy.extraParams, {gradeId : records[0].data.id});
+});
 
 //domReady
 Ext.onReady(function () {
