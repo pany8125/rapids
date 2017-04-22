@@ -31,7 +31,7 @@ public class Pack {
 
     @SuppressWarnings({"unused", "WeakerAccess"})
     public enum Type {
-        ENGLISH, MATH, LITERATURE
+        ENGLISH, MATH, LITERATURE, SCIENCE, ART
     }
 
 }
