@@ -101,7 +101,7 @@
                 <version>1.4.5.RELEASE</version>
                 <scope>test</scope>
             </dependency>
-            <!-- test end -->
+            <!-- test ended -->
         </dependencies>
     </dependencyManagement>
 
