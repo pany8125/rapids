@@ -273,11 +273,11 @@
                     cb()
                 }
                 buttonOpen();
-                animate({
-                    top: -15
-                }, 300, 'easeInOutExpo', function () {
-
-                });
+//                animate({
+//                    top: -15
+//                }, 300, 'easeInOutExpo', function () {
+//
+//                });
             }
             function showBody() {
                 buttonDisable();
@@ -290,6 +290,7 @@
 //                    buttonOpen();
 //                });
                 knowBody.fadeIn();
+                buttonOpen();
             }
             function buttonDisable() {
                 $(".button-group button").addClass("disabled");
@@ -351,6 +352,7 @@
                     data: JSON.stringify(requestBody),
                     success: function (entity) {
                         clearRequest();
+                        $(".knowledge-body").hide();
                         clearTitle(function () {
                             makePage(entity);
                             showTitle();
