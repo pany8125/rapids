@@ -29,6 +29,6 @@ public interface StuPackRelaRepo extends PagingAndSortingRepository<StuPackRela,
     Long deleteByPackId(long packId);
 
     @Modifying
-    @Query(value = "UPDATE StuPackRela SET learnedNusm = learnedNum + 1 WHERE studentId = ?1 AND packId = ?2", nativeQuery = true)
+    @Query(value = "UPDATE StuPackRela SET learnedNum = learnedNum + 1 WHERE studentId = ?1 AND packId = ?2", nativeQuery = true)
     int updateLeanedCountByStuId(long studentId, long packId);
 }
