@@ -306,6 +306,21 @@ var knowledgePop = Ext.create('Ext.window.Window', {
 	]
 });
 
+var southStore = Ext.create('Ext.data.JsonStore', {
+	storeId: 'southStore',
+	pageSize: itemsPerPage, // 每页显示条数
+	fields: ['id', 'packId', 'name', 'title', 'description', 'descPic', 'memo', 'memoPic'],
+	proxy: {
+		type: 'ajax',
+		url: path + '/pack/packKnowledge',
+		reader: {
+			type: 'json',
+			totalProperty: 'result',
+			root: 'rows'
+		}
+	}
+});
+
 var centerPanel = Ext.create('Ext.grid.Panel', {
 	region: 'center',
 	title: '知识包列表',
@@ -357,7 +372,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 			xtype: 'button',
 			text: '修改知识包',
 			handler: function () {
-				var models = southPanel.getSelectionModel().getSelection();
+				var models = centerPanel.getSelectionModel().getSelection();
 				if (models.length <= 0) {
 					Ext.Msg.alert('系统提示', '请选择要编辑的数据');
 					return;
@@ -423,20 +438,7 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 		{header: '秒记忆', align: 'center', width: 200, dataIndex: 'memo'},
 		{header: '秒记忆图片地址', align: 'center', width: 200, dataIndex: 'memoPic'}
 	],
-	store: Ext.create('Ext.data.JsonStore', {
-		storeId: 'southStore',
-		pageSize: itemsPerPage, // 每页显示条数
-		fields: ['id', 'packId', 'name', 'title', 'description', 'descPic', 'memo', 'memoPic'],
-		proxy: {
-			type: 'ajax',
-			url: path + '/pack/packKnowledge',
-			reader: {
-				type: 'json',
-				totalProperty: 'results',
-				root: 'rows'
-			}
-		}
-	}),
+	store: southStore,
 	tbar: [
 		{	//计划列表表头添加按钮
 			xtype: 'button',
@@ -519,15 +521,24 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 			}
 		}
 	],
+	bbar: Ext.create('Ext.toolbar.Paging', {
+		store: southStore,
+		displayInfo: true,
+		displayMsg: '第{0}-{1}条，共{2}条',
+		emptyMsg: "没有数据",
+		beforePageText: '第',
+		afterPageText: '页，共 {0} 页'
+	})
 });
-bbar: Ext.create('Ext.toolbar.Paging', { //TODO:无法分页啊???
-	store: Ext.data.StoreManager.get('southStore'),
-	displayInfo: true,
-	displayMsg: '第{0}-{1}条，共{2}条',
-	emptyMsg: "没有数据",
-	beforePageText: '第',
-	afterPageText: '页，共 {0} 页'
-})
+
+southStore.on("beforeload",function(){
+	var records = centerPanel.getSelectionModel().getSelection();
+	if (records.length == 0) {
+		Ext.Msg.alert('系统提示', '请选择班级');
+		return;
+	}
+	Ext.apply(southStore.proxy.extraParams, {packid : records[0].data.id});
+});
 
 //domReady
 Ext.onReady(function () {
