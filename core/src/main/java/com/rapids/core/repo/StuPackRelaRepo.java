@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,6 +30,10 @@ public interface StuPackRelaRepo extends PagingAndSortingRepository<StuPackRela,
     Long deleteByPackId(long packId);
 
     @Modifying
-    @Query(value = "UPDATE StuPackRela SET learnedNum = learnedNum + 1 WHERE studentId = ?1 AND packId = ?2", nativeQuery = true)
-    int updateLeanedCountByStuId(long studentId, long packId);
+    @Query(value = "UPDATE StuPackRela SET lastLearnTime = ?1 WHERE studentId = ?2 AND packId = ?3", nativeQuery = true)
+    int updateLeanedDateByStuId(Date date, long studentId, long packId);
+
+    @Modifying
+    @Query(value = "UPDATE StuPackRela SET learnedNum = learnedNum + 1, lastLearnTime = ?1 WHERE studentId = ?2 AND packId = ?3", nativeQuery = true)
+    int updateLeanedByStuId(Date date, long studentId, long packId);
 }

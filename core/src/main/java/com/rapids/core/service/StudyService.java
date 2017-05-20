@@ -87,6 +87,7 @@ public class StudyService {
     /**
      *  将知识点记录成已复习
      */
+    @Transactional
     public void reviewKnowledge(StuKnowledgeRela knowledgeRela) {
         reviewKnowledge(knowledgeRela, 0);
     }
@@ -109,12 +110,11 @@ public class StudyService {
         stuKnowledgeRelaRepo.save(stuKnowledgeRela);
 //      -1的packId为学生自己上传的知识点,不计入知识包统计
         if(-1 != stuKnowledgeRela.getPackId()) {
-            StuPackRela stuPackRela = stuPackRelaRepo.findByStudentIdAndPackId(stuKnowledgeRela.getStudentId(),
-                    stuKnowledgeRela.getPackId());
-            stuPackRela.setLastLearnTime(new Date());
-            stuPackRelaRepo.save(stuPackRela);
             if(statLeanedCount) {
-                stuPackRelaRepo.updateLeanedCountByStuId(
+                stuPackRelaRepo.updateLeanedByStuId(new Date(),
+                        stuKnowledgeRela.getStudentId(), stuKnowledgeRela.getPackId());
+            }else {
+                stuPackRelaRepo.updateLeanedDateByStuId(new Date(),
                         stuKnowledgeRela.getStudentId(), stuKnowledgeRela.getPackId());
             }
         }
