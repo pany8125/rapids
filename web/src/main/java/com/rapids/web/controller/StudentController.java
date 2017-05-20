@@ -11,13 +11,17 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.servlet.http.HttpSession;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 
 /**
@@ -30,7 +34,7 @@ import javax.servlet.http.HttpSession;
 public class StudentController {
 
     private static Logger LOGGER = LoggerFactory.getLogger(StudentController.class);
-
+    private @Value("${server.website-path}") String webPath;
     private @Setter Integer enableCount;
     private @Autowired StudentRepo studentRepo;
     private @Autowired StudyService studyService;
@@ -48,6 +52,16 @@ public class StudentController {
         session.setAttribute(Constants.STUDENT_SESSION_KEY, student);
         //每次登陆检查是否需要激活知识点
         studyService.activity(student.getId(), enableCount);
+    }
+
+    @GetMapping("exit")
+    @ResponseStatus(HttpStatus.FOUND)
+    public ResponseEntity exit(HttpSession session) throws URISyntaxException {
+        session.removeAttribute(Constants.STUDENT_SESSION_KEY);
+        String webIndexPath = webPath.endsWith("/") ? webPath : webPath + "/";
+        return ResponseEntity.status(HttpStatus.FOUND).location(
+                new URI(webIndexPath)
+        ).build();
     }
 
     @GetMapping("checkSession")

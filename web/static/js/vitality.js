@@ -76,7 +76,7 @@ $(document).ready(function() {
 
     $(".exit").bind("click", function() {
         if(window.confirm("确定退出系统吗？")) {
-            location.href="culinary.html"
+            location.href = restPath + "/exit";
         }
     })
 
