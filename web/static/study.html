@@ -75,12 +75,12 @@
         </div>
     </nav>
     <!-- Team Section -->
-    <div class="knowledge">
+    <div class="knowledge" style="width:400px;margin-bottom:50px;word-wrap:break-word; word-break:break-all;">
         <div id="knowledge" class="testimonials">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2 style="">People</h2>
+                        <h2>People</h2>
                     </div>
                 </div>
             </div>
@@ -91,7 +91,7 @@
             <div class="container text-center wow fadeIn">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2>&nbsp;</h2>
+                        <h2 class="name" style="word-wrap:break-word; word-break:break-all;">&nbsp;</h2>
                         <p>We are a group of professionals and artisan chefs with a passion for culinary excellence.</p>
                         <hr class="colored">
                     </div>
@@ -206,6 +206,7 @@
             function makePage(know) {
                 requestBody.knowledgeId = know.id;
                 $("#knowledge").find("h2").text(know.name);
+                $(".knowledge-body").find("h2.name").text(know.name);
                 $("#base").find("p").text(know.description);
                 if(null != know.descPic && '' != know.descPic) {
                     setCarousel(know.descPic.split("##"), $("#desc-pics"));
@@ -243,42 +244,51 @@
                 titleShowed = true;
                 bodyShowed = false;
                 requestBody.viewCount += 1;
-                kWidth = knowledge.width(),
+                kWidth = knowledge.width();
+                var top = $(window).height() / 2 - knowledge.height() / 2;
+                console.log(kWidth, width, $(window).height(), knowledge.height(), top);
+                top = top < 0 ? 70 : top + 70;
                 knowledge.css({
-                    left : width/2 - kWidth/2
-                }).animate({
-                    top: $(window).height() / 2 - 20
-                }, 1250, 'easeInOutExpo', function () {
-                    if(cb) {
-                        cb()
-                    }
-                    buttonOpen();
-                });
+                    left : width/2 - kWidth/2,
+                    top: top
+                }).fadeIn();
+                if(cb) {
+                    cb()
+                }
+                buttonOpen();
+//            .animate({
+//                }, 1250, 'easeInOutExpo', function () {
+//
+//                });
             }
             function clearTitle(cb) {
                 buttonDisable();
                 knowBody.fadeOut();
                 bodyShowed = false;
                 knowledge.css({
-                    left : width/2 - kWidth/2
-                }).animate({
+                    left : width/2 - kWidth/2,
+                    top: $(window).height() / 2 - 20
+                }).fadeOut();
+                if(cb) {
+                    cb()
+                }
+                buttonOpen();
+                animate({
                     top: -15
                 }, 300, 'easeInOutExpo', function () {
-                    if(cb) {
-                        cb()
-                    }
-                    buttonOpen();
+
                 });
             }
             function showBody() {
                 buttonDisable();
                 titleShowed = true;
                 bodyShowed = true;
-                knowledge.animate({
-                    top: 150
-                }, 450, 'easeInOutExpo', function() {
-                    buttonOpen();
-                });
+                knowledge.fadeOut();
+//                animate({
+//                    top: 150
+//                }, 450, 'easeInOutExpo', function() {
+//                    buttonOpen();
+//                });
                 knowBody.fadeIn();
             }
             function buttonDisable() {
@@ -344,7 +354,7 @@
                         clearTitle(function () {
                             makePage(entity);
                             showTitle();
-                        })
+                        });
                         buttonOpen();
                     },
                     error: function(resp) {
