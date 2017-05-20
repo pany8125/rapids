@@ -1,6 +1,7 @@
 package com.rapids.core.repo;
 
 import com.rapids.core.domain.StuPackRela;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -26,4 +27,8 @@ public interface StuPackRelaRepo extends PagingAndSortingRepository<StuPackRela,
     Long deleteByStudentId(long studentId);
 
     Long deleteByPackId(long packId);
+
+    @Modifying
+    @Query(value = "UPDATE StuPackRela SET learnedNusm = learnedNum + 1 WHERE studentId = ?1 AND packId = ?2", nativeQuery = true)
+    int updateLeanedCountByStuId(long studentId, long packId);
 }

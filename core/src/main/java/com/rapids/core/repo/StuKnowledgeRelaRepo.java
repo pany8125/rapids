@@ -5,8 +5,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Date;
 import java.util.List;
 
@@ -34,11 +32,11 @@ public interface StuKnowledgeRelaRepo extends PagingAndSortingRepository<StuKnow
     StuKnowledgeRela findNext(Long studentId);
 
     @Query(value = "SELECT * FROM StuKnowledgeRela " +
-            "WHERE enableTime > ?1 AND enableTime < ?2 LIMIT 1", nativeQuery = true)
-    StuKnowledgeRela findEnableByDay(String startDateFormat, String endDateFormat);
+            "WHERE studentId = ?1 AND enableTime > ?2 AND enableTime < ?3 LIMIT 1", nativeQuery = true)
+    StuKnowledgeRela findEnableByDay(long studentId, String startDateFormat, String endDateFormat);
 
     @Modifying
-    @Query(value = "UPDATE StuKnowledgeRela set enabled = 1, enableTime = ?1 " +
+    @Query(value = "UPDATE StuKnowledgeRela SET enabled = 1, enableTime = ?1 " +
             "WHERE studentId = ?2 AND enabled = 0 LIMIT ?3", nativeQuery = true)
     int enableKnowledgeByStudentId(Date enableDate, long studentId, int limit);
 

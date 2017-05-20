@@ -1,6 +1,5 @@
 package com.rapids.web.controller;
 
-import com.rapids.core.domain.StuKnowledgeRela;
 import com.rapids.core.domain.Student;
 import com.rapids.core.repo.StuKnowledgeRelaRepo;
 import com.rapids.core.repo.StudentRepo;

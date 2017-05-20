@@ -9,13 +9,11 @@ import com.rapids.core.repo.StudyLogRepo;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,7 +44,7 @@ public class StudyService {
     public void resetSeq(StuKnowledgeRela stuKnowledgeRela) {
         LOGGER.debug("讲知识点放到知识序列末尾");
         stuKnowledgeRela.setCreateTime(new Date());
-        saveKnowledgeRela(stuKnowledgeRela);
+        saveKnowledgeRela(stuKnowledgeRela, false);
     }
 
     /**
@@ -74,7 +72,7 @@ public class StudyService {
                     sft.format(knowledgeRela.getReviewTime()),
                     knowledgeRela.getReviewCount() + 1,
                     sft.format(new Date(knowledgeRela.getLeanSeq())));
-            saveKnowledgeRela(knowledgeRela);
+            saveKnowledgeRela(knowledgeRela, false);
         }
     }
 
@@ -102,20 +100,23 @@ public class StudyService {
         knowledgeRela.setDeleted(true);
         knowledgeRela.setViewCount(0);
         knowledgeRela.setLeanSeq(-1L);
-        saveKnowledgeRela(knowledgeRela);
+        saveKnowledgeRela(knowledgeRela, true);
     }
 
     @SuppressWarnings("WeakerAccess")
     @Transactional
-    public void saveKnowledgeRela(StuKnowledgeRela stuKnowledgeRela) {
+    public void saveKnowledgeRela(StuKnowledgeRela stuKnowledgeRela, boolean statLeanedCount) {
         stuKnowledgeRelaRepo.save(stuKnowledgeRela);
 //      -1的packId为学生自己上传的知识点,不计入知识包统计
         if(-1 != stuKnowledgeRela.getPackId()) {
             StuPackRela stuPackRela = stuPackRelaRepo.findByStudentIdAndPackId(stuKnowledgeRela.getStudentId(),
                     stuKnowledgeRela.getPackId());
-            stuPackRela.setLearnedNum(stuPackRela.getLearnedNum() + 1);
             stuPackRela.setLastLearnTime(new Date());
             stuPackRelaRepo.save(stuPackRela);
+            if(statLeanedCount) {
+                stuPackRelaRepo.updateLeanedCountByStuId(
+                        stuKnowledgeRela.getStudentId(), stuKnowledgeRela.getPackId());
+            }
         }
         createLog(stuKnowledgeRela);
     }
@@ -142,7 +143,7 @@ public class StudyService {
             String startDate = simpleDateFormat.format(calendar.getTime());
             calendar.add(Calendar.DATE, 1);
             String endDate = simpleDateFormat.format(calendar.getTime());
-            StuKnowledgeRela stuKnowledgeRela = stuKnowledgeRelaRepo.findEnableByDay(startDate, endDate);
+            StuKnowledgeRela stuKnowledgeRela = stuKnowledgeRelaRepo.findEnableByDay(studentId, startDate, endDate);
             if(null == stuKnowledgeRela) {
                 int currentEnableCount = stuKnowledgeRelaRepo.enableKnowledgeByStudentId(enableDate, studentId, enableCount);
                 LOGGER.info("student: {}, packId: {}, enableCount : {}, date: {}",
