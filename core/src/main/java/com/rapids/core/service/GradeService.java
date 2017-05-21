@@ -80,6 +80,11 @@ public class GradeService {
         return this.studentRepo.findByMobile(mobile);
     }
 
+    @Transactional
+    public List<Student> getStudentListByName(String name){
+        return this.studentRepo.findByName(name);
+    }
+
     public List<Student> getStudentList(Long gradeId, Integer page, Integer limit){
         PageRequest pageRequest = new PageRequest(page-1, limit);
         return studentRepo.findByGradeId(gradeId, pageRequest).getContent();

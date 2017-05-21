@@ -35,7 +35,12 @@ public class RelaController {
 
     @RequestMapping(value = "/getStudent")
     public ExtEntity<Student> getStudentListByTitle(@RequestParam("sMobile") String mobile) {
-        List<Student> list = this.gradeService.getStudentListByMobile(mobile);
+        List<Student> list;
+        if( mobile.startsWith("1") && mobile.length() == 11){ //手机号
+            list = this.gradeService.getStudentListByMobile(mobile);
+        }else { //姓名
+            list = this.gradeService.getStudentListByName(mobile);
+        }
         ExtEntity<Student> entity = new ExtEntity<>();
         entity.setResult(list.size());
         entity.setRows(list);

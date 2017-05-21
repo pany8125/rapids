@@ -120,7 +120,7 @@ var centerPanel = Ext.create('Ext.grid.Panel', {
 	tbar: [
 		{
 			xtype: 'textfield',
-			fieldLabel: '手机号',
+			fieldLabel: '手机号/姓名',
 			name: 'sMobile',
 			id: 'sMobile'
 		},
@@ -194,7 +194,7 @@ var southPanel = Ext.create('Ext.grid.Panel', {
 						Ext.Msg.confirm('系统提示', '删除之后学生对于该学习包需要从头开始学习,您真的确认一定要删除吗?', function (option) {
 							if ('yes' === option) {
 								Ext.Ajax.request({
-									url: path + '/rele/delRela?studentId=' + records[0].data.studentId + '&packId=' +records[0].data.packId,
+									url: path + '/rela/delRela?studentId=' + records[0].data.studentId + '&packId=' +records[0].data.packId,
 									scope: this,
 									async: true,
 									success: function (response, options) {

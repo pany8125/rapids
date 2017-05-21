@@ -18,6 +18,7 @@ public interface StudentRepo extends PagingAndSortingRepository<Student, Long> {
 
     Student findByNameAndPassword(String name, String password);
     List<Student> findByMobile(String mobile);
+    List<Student> findByName(String name);
     Page<Student> findByGradeId(Long gradeId, Pageable pageable);
 
     @Query(value = "SELECT count(*) FROM Student " +
